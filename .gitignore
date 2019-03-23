@@ -1,3 +1,6 @@
 # rar file
 *.rar
 *.zip
+
+# PDF file
+*.pdf
