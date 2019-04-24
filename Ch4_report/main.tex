@@ -1,0 +1,920 @@
+\documentclass[preprint,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+%% The graphicx package provides the includegraphics command.
+\usepackage{graphicx}
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+% \usepackage{lineno}
+
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{breqn}
+
+%% add pseudo codes
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+\floatname{algorithm}{Algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{INPUT:}}
+\renewcommand{\algorithmicensure}{\textbf{OUTPUT:}}
+
+%% add python codes
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%
+%% \biboptions{comma,round}
+
+% \biboptions{}
+
+\journal{}
+
+\begin{document}
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+\title{Numerical Differentiation and Integration}
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+\author{ChaosWsF}
+
+\address{No.00, X University}
+
+\begin{abstract}
+%% Text of abstract
+The purpose of this report is to approximate an integral by numerical method. Taken the accuracy and popularity into consideration, there are three methods discussed in the report, namely Composite Simpson's rule, Romberg integration and Composite Gaussian quadrature. Then several experiments have been made to verify the effectiveness of those quadrature methods. Based on results of those experiments, it can be observed that those methods are effective and useful. Furthermore, the comparison among those methods have been made according to their accuracy and used time, which shows that Composite Gaussian quadraute is the most accurate and Romberg integration takes the most time.
+\end{abstract}
+
+\begin{keyword}
+Composite Simpson's Rule \sep Romberg Integration \sep Composite Gaussian Quadrature
+%% keywords here, in the form: keyword \sep keyword
+
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+
+\end{keyword}
+
+\end{frontmatter}
+
+%%
+%% Start line numbering here if you want
+%%
+% \linenumbers
+
+%% main text
+\section{Introduction}
+\label{S:1}
+
+In numerical analysis, numerical integration comprises a broad family of algorithms for calculating the numerical value of a definite integral, and by extension, the term is also sometimes used to describe the numerical solution of differential equations. The term "numerical integration" first appears in 1915 in the publication \textit{A Course in Interpolation and Numeric Integration for the Mathematical Laboratory} by David Gibb.
+
+Quadrature is a historical mathematical term that means calculating area. Quadrature problems have served as one of the main sources of mathematical analysis. Mathematicians of Ancient Greece, according to the Pythagorean doctrine, understood calculation of area as the process of constructing geometrically a square having the same area (\textit{squaring}). That is why the process was named quadrature. This construction must be performed only by means of compass and straightedge.
+
+For a quadrature of a rectangle with the sides $a$ and $b$ it is necessary to construct a square with the side $x=\sqrt{ab}$ (the Geometric mean of $a$ and $b$). For this purpose it is possible to use the following fact: if we draw the circle with the sum of $a$ and $b$ as the diameter, then the height BH (from a point of their connection to crossing with a circle) equals their geometric mean. The similar geometrical construction solves a problem of a quadrature for a parallelogram and a triangle.
+
+Problems of quadrature for curvilinear figures are much more difficult. The quadrature of the circle with compass and straightedge had been proved in the 19th century to be impossible. Nevertheless, for some figures (for example the Lune of Hippocrates) a quadrature can be performed. The quadratures of a sphere surface and a parabola segment done by Archimedes became the highest achievement of the antique analysis. For the proof of the results Archimedes used the Method of exhaustion of Eudoxus.
+
+In medieval Europe the quadrature meant calculation of area by any method. More often the Method of indivisibles was used; it was less rigorous, but more simple and powerful. With its help Galileo Galilei and Gilles de Roberval found the area of a cycloid arch, Grégoire de Saint-Vincent investigated the area under a hyperbola (\textit{Opus Geometricum, 1647}), and Alphonse Antonio de Sarasa, de Saint-Vincent's pupil and commentator, noted the relation of this area to logarithms.
+
+John Wallis algebrised this method: he wrote in his \textit{Arithmetica Infinitorum} (1656) series that we now call the definite integral, and he calculated their values. Isaac Barrow and James Gregory made further progress: quadratures for some algebraic curves and spirals. Christiaan Huygens successfully performed a quadrature of some Solids of revolution.
+
+The quadrature of the hyperbola by Saint-Vincent and de Sarasa provided a new function, the natural logarithm, of critical importance.
+
+With the invention of integral calculus came a universal method for area calculation. In response, the term quadrature has become traditional, and instead the modern phrase "\textit{computation of a univariate definite integral}" is more common.
+
+In Section \ref{S:1}, the background and some history have been recalled. In Section \ref{S:2}, several methods of quadrature are to be introduced and their formulas are to be interpreted. These methods are Composite Simpson's rule, Romberg integration and Composite Gaussian quadrature. In Section \ref{S:3}, several experiments are designed to verify the efficiency of those methods and their error is also listed. In Section \ref{S:4}, the comparison among those methods are made from the view of accuracy and efficiency. In Section \ref{S:5}, the conclusion of the report has been made.
+
+\section{Methodologies}
+\label{S:2}
+
+There are several numerical methods to obtain the value of an integral, which have been introduced in \cite{burden:2001na}. In this section, three methods are to be illustrated, due to their popularity and accuracy. And there is a list of them below.
+
+\begin{itemize}
+\item Composite Simpson's rule
+\item Romberg integration
+\item Composite Gaussian quadrature
+\end{itemize}
+
+All these methods can be used to achieve numerical integration within reasonable given accuracy. The Composite Simpson's rule is the product of the combination of polynomial interpolation and piecewise approach. The Romberg Integration is achieved by Richardson extrapolation applied to results from Composite Trapezoidal rule, which can obtain higher accuracy. The Gaussian quadrature is developed from a different perspective, in exact using optimal quadrature points instead of equally-spaced points. And when it is combined with composite method, it is called Composite Gaussian quadrature.
+
+\subsection{Composite Simpson's Rule}
+\label{SS:2.1}
+
+As is mentioned in Section \ref{S:1}, numerical quadrature is introduced to evaluating the definite integral of a function that has no explicit anti-derivative or whose anti-derivative is difficult to obtain. The methods of quadrature in this section are based on the interpolation polynomials. The basic idea is to select a set of distinct nodes ${x_{0},\dots,x_{n}}$ from the interval $[a,b]$. Then integrate the Lagrange interpolating polynomial
+
+\begin{equation}
+    P_{n}(x)=\sum^{n}_{i=0}{f(x_i)L_{i}(x)}
+\end{equation}
+
+and its truncation error term over $[a,b]$ to obtain
+
+\begin{equation}
+    \begin{split}
+        \int_{a}^{b}f(x)dx & = \int_{a}^{b}\sum_{i=0}^{n}f(x_i)L_{i}(x)dx + \int_{a}^{b}\prod_{i=0}^{n}(x-x_i)\frac{f^{(n+1)}(\xi(x))}{(n+1)!}dx \\
+        & = \sum_{i=0}^{n}a_{i}f(x_i)+\frac{1}{(n+1)!}\int_{a}^{b}\prod_{i=0}^{n}(x-x_i)f^{(n+1)}(\xi(x))dx,
+    \end{split}
+\end{equation}
+
+where $\xi(x)$ is in $[a,b]$ for each $x$ and
+
+\begin{equation}
+    a_{i}=\int_{a}^{b}L_{i}(x)dx,\quad\forall i\in {0,1,\dots,n}.
+\end{equation}
+
+The quadrature formula is, therefore,
+
+\begin{equation}
+    \int_{a}^{b}f(x)dx \approx \sum_{i=0}^{n}a_{i}f(x_{i}),
+\end{equation}
+
+with error given by
+
+\begin{equation}
+    E(f)=\frac{1}{(n+1)!}\int_{a}^{b}\prod_{i=0}^{n}(x-x_i)f^{(n+1)}(\xi(x))dx.
+\end{equation}
+
+Simpson’s rule results from integrating over $[a,b]$ the second Lagrange polynomial with equally-spaced nodes $x_0 =a,x_2 =b$, and $x_1 =a+h$, where $h=(b-a)/2$. Deriving Simpson’s rule in this manner, however, provides only an $O(h^4)$ error term involving $f^{(3)}$. By approaching the problem in another way, a higher-order term involving $f^{(4)}$ can be derived.
+
+To illustrate this alternative method, suppose that $f$ is expanded in the third Taylor polynomial about $x_1$. Then for each $x$ in $[x_0,x_2]$, a number $\xi(x)$ in $(x_0,x_2)$ exists with
+
+\begin{dmath}
+    f(x)=f(x_1)+f'(x_1)(x-x_1)+\frac{f''(x_1)}{2}(x-x_1)^2 +\frac{f'''(x_1)}{6}(x-x_1)^3 +\frac{f^{(4)}(\xi(x))}{24}(x-x_1)^4
+\end{dmath}
+
+and
+
+\begin{dmath}
+    \int_{x_0}^{x_2}f(x)dx=\left[f(x_1)(x-x_1)+\frac{f'(x_1)}{2}(x-x_1)^2+\frac{f''(x_1)}{6}(x-x_1)^3+\frac{f'''(x_1)}{24}(x-x_1)^4\right]^{x_2}_{x_0}+\frac{1}{24}\int_{x_0}^{x_2}f^{(4)}(\xi(x))(x-x_1)^{4}dx.
+\end{dmath}
+
+Because $(x-x_1)^4$ is never negative on $[x_0,x_2]$, the Weighted Mean Value Theorem implies that
+
+\begin{equation}
+    \frac{1}{24}\int_{x_0}^{x_2}f^{(4)}(\xi(x))(x-x_1)^{4}dx=\left[\frac{f^{(4)}(\xi_1)}{120}(x-x_1)^5 \right]^{x_2}_{x_0},
+\end{equation}
+
+for some number $\xi_1$ in $(x_0,x_2)$. However, $h=x_2 -x_1 =x_1 -x_0$ and numerical differentiation can be used here, so
+
+\begin{equation}
+\label{eq:intro_sim1}
+    \int_{x_0}^{x_2}f(x)dx =\frac{h}{3}[f(x_0)+4f(x_1)+f(x_2)]-\frac{h^5}{90}f^{(4)}(\xi).
+\end{equation}
+
+The Eq. (\ref{eq:intro_sim1}) gives Simpson’s rule. It uses some methods to replace $\xi_1$ and $\xi_2$ shown in \cite{burden:2001na}. And when it comes to Composite Simpson's rule, it can be obtained by applying the Simpson's rule on $n$ sub-intervals. The pseudo codes are shown in Algorithm \ref{algo:sim}
+
+\begin{algorithm}
+    \caption{Composite Simpson's Rule}
+    \label{algo:sim}
+    \begin{algorithmic}[1]
+    \Require endpoints $a,b$; even positive integer $n$
+    \Ensure approximate XI to $I$
+    \State $h\gets (b-a)/n$
+    \State $\mathrm{XI}0=f(a)+f(b);\mathrm{XI}1=0;\mathrm{XI}2=0$
+    \For {$i=1,\dots,n-1$}
+        \State $X\gets a+ih$
+        \If {$i$ is even}
+            \State $\mathrm{XI}2=\mathrm{XI}2+f(X)$
+        \Else
+            \State $\mathrm{XI}1=\mathrm{XI}1+f(X)$
+        \EndIf
+    \EndFor
+    \State $\mathrm{XI}=h(\mathrm{XI}0+2\cdot \mathrm{XI}2+4\cdot \mathrm{XI}1)/3$
+    \State OUTPUT(XI)
+    \State STOP.
+    \end{algorithmic}
+\end{algorithm}
+
+\subsection{Romberg Integration}
+\label{SS:2.2}
+
+Richardson’s extrapolation is used to generate high-accuracy results while using low-order formulas. Extrapolation can be applied whenever it is known that an approximation technique has an error term with a predictable form, one that depends on a parameter, usually the step size $h$. Suppose that for each number $h\neq 0$ we have a formula $N_1(h)$ that approximates an
+unknown constant $M$, and that the truncation error involved with the approximation has the form
+
+\begin{equation}
+    M-N_{1}(h)=K_{1}h+K_{2}h^{2}+K_{3}h^{3}+\cdots,
+\end{equation}
+
+for some collection of (unknown) constants $K_1,K_2,K_3,\dots$. The truncation error is $O(h)$, so unless there was a large variation in magnitude among the constants $K_1,K_2,K_3,\dots$,
+
+\begin{equation}
+    M-N_{1}(0.1) \approx 0.1K_1,\quad M-N_{1}(0.01) \approx 0.01K_1 ,
+\end{equation}
+
+and, in general, $M-N_{1}(h)\approx K_{1}h$. The object of extrapolation is to find an easy way to combine these rather inaccurate $O(h)$ approximations in an appropriate way to produce formulas with a higher-order truncation error.
+
+Suppose, for example, we can combine the $N_{1}(h)$ formulas to produce an $O(h^2)$ approximation formula, $N_{2}(h)$, for $M$ with
+
+\begin{equation}
+    M-N_{2}(h)=\hat{K_2}h^2 + \hat{K_3}h^3 +\cdots,
+\end{equation}
+
+for some, again unknown, collection of constants $\hat{K_2},\hat{K_3},\dots$.
+
+Then we would have
+
+\begin{equation}
+    M-N_{2}(0.1)\approx 0.01\hat{K_2},\quad M-N_{2}(0.01)\approx 0.0001\hat{K_2},
+\end{equation}
+
+and so on.
+
+If the constants $K_1$ and $\hat{K_2}$ are roughly of the same magnitude, then the $N_{2}(h)$ approximations would be much better than the corresponding $N_{1}(h)$ approximations. The extrapolation continues by combining the $N_{2}(h)$ approximations in a manner that produces formulas with $O(h_3)$ truncation error, and so on.
+
+To see specifically how we can generate the extrapolation formulas, consider the $O(h)$ formula for approximating $M$
+
+\begin{equation}
+\label{eq:rom1}
+    M=N_{1}(h)+K_{1}h+K_{2}h^{2}+K_{3}h^{3}+\cdots.
+\end{equation}
+
+The formula is assumed to hold for all positive $h$, so we replace the parameter $h$ by half its value. Then we have a second $O(h)$ approximation formula
+
+\begin{equation}
+\label{eq:rom2}
+    M=N_{1}(\frac{h}{2})+K_{1}\frac{h}{2}+K_{2}\frac{h^2}{2}+K_{3}\frac{h^3}{8}+\cdots.
+\end{equation}
+
+Subtracting Eq. (\ref{eq:rom1}) from twice Eq. (\ref{eq:rom2}) eliminates the term involving $K_1$ and define $N_{2}(h)=N_{1}(\frac{h}{2})+\left[N_{1}(\frac{h}{2})-N_{1}(h)\right]$.
+
+Then an $O(h^2)$ approximation formula for $M$ is 
+
+\begin{equation}
+    M=N_{2}(h)-\frac{K_2}{2}h^{2}-\frac{3K_3}{4}h^{3}-\cdots.
+\end{equation}
+
+Richardson extrapolation can be performed on any approximation procedure whose truncation error is of the form
+
+\begin{equation}
+    \sum_{j=1}^{m-1}K_{j}h^{\alpha_j} + O(h^{\alpha_m}),
+\end{equation}
+
+for a collection of constants $K_j$ and when $\alpha_1 < \alpha_2 < \alpha_3 < \cdots < \alpha_m$. In that section we gave demonstrations to illustrate how effective this techniques is when the approximation procedure has a truncation error with only even powers of $h$, that is, when the truncation error has the form.
+
+\begin{equation}
+    \sum_{j=1}^{m-1}K_{j}h^{2j} + O(h^{2m}),
+\end{equation}
+
+Because the Composite Trapezoidal rule has this form, it is an obvious candidate for extrapolation. This results in a technique known as \textbf{Romberg integration}.
+
+To approximate the integral $\int_{a}^{b} f(x)dx$ we use the results of the Composite Trapezoidal rule with $n=1,2,4,8,16,\dots$, and denote the resulting approximations, respectively, by $R_{1,1},R_{2,1},R_{3,1}$, etc. We then apply extrapolation in the manner given before, that is, we obtain $O(h^4)$ approximations $R_{2,2},R_{3,2},R_{4,2}$, etc., by
+
+\begin{equation}
+    R_{k,2}=R_{k,1}+\frac{1}{3}(R_{k,1}-R_{k-1,1}),\quad \mathrm{for}\,k=2,3,\dots.
+\end{equation}
+
+Then $O(h_6)$ approximations $R_{3,3},R_{4,3},R_{5,3}$, etc., by
+
+\begin{equation}
+    R_{k,3}=R_{k,2}+\frac{1}{15}(R_{k,2}-R_{k-1,2}),\quad \mathrm{for}\,k=3,4,\dots.
+\end{equation}
+
+In general, after the appropriate $R_{k,j-1}$ approximations have been obtained, we determine the $O(h^{2j})$ approximations from
+
+\begin{equation}
+    R_{k,j}=R_{k,j-1}+\frac{1}{4^{j-1}-1}(R_{k,j-1}-R_{k-1,j-1}),\quad \mathrm{for}\,k=j,j+1,\dots.
+\end{equation}
+
+Algorithm \ref{algo:rom} uses the recursive procedure to find the initial Composite Trapezoidal Rule approximations and computes the results row by row.
+
+\begin{algorithm}
+    \caption{Romberg}
+    \label{algo:rom}
+    \begin{algorithmic}[1]
+    \Require endpoints $a,b$; integer $n$
+    \Ensure an array $R$
+    \State $h\gets b-a$
+    \State $R_{1,1}=\frac{h}{2}(f(a)+f(b))$
+    \State OUTPUT($R_{1,1}$)
+    \For {$i=2,\dots,n$}
+        \State $R_{2,1}=\frac{1}{2}\left[R_{1,1}+h\sum_{k=1}^{2^{i-2}}f(a+(k-0.5)h)\right]$
+        \For {$j=2,\dots,i$}
+            \State $R_{2,i}=R_{2,j-1}+\frac{R_{2,j-1}-R_{1,j-1}}{4^{j-1}-1}$
+            \State OUTPUT($R_{2,j}$ for $j=1,2,\dots,i$)
+            \State $h=h/2$
+            \For {$j=1,2,\dots,i$}
+                \State $R_{1,j}=R_{2,j}$
+            \EndFor
+        \EndFor
+    \EndFor
+    \State STOP
+    \end{algorithmic}
+\end{algorithm}
+
+\subsection{Composite Gaussian Quadrature}
+\label{SS:2.3}
+
+Gaussian quadrature chooses the points for evaluation in an optimal, rather than equally-spaced, way. The nodes $x_1, x_2,\dots,x_n$ in the interval $[a,b]$ and coefficients $c_1,c_2,\dots,c_n$, are chosen to minimize the expected error obtained in the approximation
+
+\begin{equation}
+    \int_{a}^{b}f(x)dx \approx \sum_{i=1}^{n}c_{i}f(x_i).
+\end{equation}
+
+To illustrate the procedure for choosing the appropriate parameters, we will show how to select the coefficients and nodes when $n=2$ and the interval of integration is $[-1,1]$. We will then discuss the more general situation for an arbitrary choice of nodes and coefficients and show how the technique is modified when integrating over an arbitrary interval.
+
+Suppose we want to determine $c_1,c_2,x_1$, and $x_2$ so that the integration formula
+
+\begin{equation}
+    \int_{-1}^{1}f(x)dx \approx c_{1}f(x_1)+c_{2}f(x_2)
+\end{equation}
+
+gives the exact result whenever $f(x)$ is a polynomial of degree $2(2)-1=3$ or less, that is, when
+
+\begin{equation}
+    f(x)=a_{0}+a_{1}x+a_{2}x^{2}+a_{3}x^{3},
+\end{equation}
+
+for some collection of constants, $a_0,a_1,a_2$, and $a_3$. Because
+
+\begin{equation}
+    \int (a_{0}+a_{1}x+a_{2}x^{2}+a_{3}x^{3})dx = a_{0}\int 1dx + a_{1}\int xdx + a_{2}\int x^{2}dx + a_{3}\int x^{3}dx,
+\end{equation}
+
+this is equivalent to showing that the formula gives exact results when $f(x)$ is $1,x,x^{2}$, and $x^{3}$. Hence, we need $c_1,c_2,x_1$, and $x_2$, so that a little algebra shows that this system of equations has the unique solution
+
+\begin{equation}
+    c_{1}=1,\quad c_{2}=1,\quad x_{1}=-\frac{\sqrt{3}}{3},\quad x_{2}=\frac{\sqrt{3}}{3},
+\end{equation}
+
+which gives the approximation formula
+
+\begin{equation}
+    \int_{-1}^{1} f(x)dx \approx f(-\frac{\sqrt{3}}{3})+f(\frac{\sqrt{3}}{3}).
+\end{equation}
+
+This formula has degree of precision 3, that is, it produces the exact result for every polynomial of degree 3 or less.
+
+The technique we have described could be used to determine the nodes and coefficients for formulas that give exact results for higher-degree polynomials, but an alternative method obtains them more easily.Now we will consider various collections of orthogonal polynomials, functions that have the property that a particular definite integral of the product of any two of them is 0. The set that is relevant to our problem is the Legendre polynomials, a collection ${P_{0}(x),P_{1}(x),\dots, P_{n}(x),\dots}$ with properties:
+
+\begin{enumerate}
+\item For each $n$, $P_{n}(x)$ is a monic polynomial of degree $n$.
+\item $\int_{-1}^{1}P(x)P_{n}(x)dx=0$ whenever $P(x)$ is a polynomial of degree less than $n$.
+\end{enumerate}
+
+The first few Legendre polynomials are
+\begin{equation}
+\nonumber
+    P_{0}(x)=1,\quad P_{1}(x)=x,\quad P_{2}(x)=x^{2}-\frac{1}{3},
+\end{equation}
+
+\begin{equation}
+    P_{3}(x)=x^{3}-\frac{3}{5}x,\quad \mathrm{and} \quad P_{4}(x)=x^{4}-\frac{6}{7}x^{2}+\frac{3}{35}.
+\end{equation}
+
+The roots of these polynomials are distinct, lie in the interval $(-1,1)$, have a symmetry with respect to the origin, and, most importantly, are the correct choice for determining the parameters that give us the nodes and coefficients for our quadrature method.
+
+The nodes $x_1,x_2,\dots,x_n$ needed to produce an integral approximation formula that gives exact results for any polynomial of degree less than $2n$ are the roots of the $n$th-degree Legendre polynomial.
+
+Suppose that $x_1,x_2,\dots,x_n$ are the roots of the nth Legendre polynomial $P_{n}(x)$ and that for each $i=1,2,\dots,n$, the numbers $c_i$ are defined by
+
+\begin{equation}
+\label{eq:cg1}
+    c_{i}=\int_{-1}^{1} \prod_{j=1,j\neq i}^{n} \frac{x-x_j}{x_{i}-x_j}dx.
+\end{equation}
+
+If $P(x)$ is any polynomial of degree less than $2n$, then
+
+\begin{equation}
+    \int_{-1}^{1} P(x)dx = \sum_{i=1}^{n} c_{i}P(x_i).
+\end{equation}
+
+The constants $c_i$ needed for the quadrature rule can be generated from the Eq. (\ref{eq:cg1}), but both these constants and the roots of the Legendre polynomials are extensively tabulated \cite{burden:2001na}. And then we can combine the Gaussian quadrature with Composite method, which is called Composite Gaussian quadrature.
+
+\section{Experiments}
+\label{S:3}
+
+In this section, there are several experiments made to verify efficiency and robustness of three methods to get the values of integration numerically, which have been introduced in Section \ref{S:2}. To obtain the results of experiments, some programs are written in Python and the following codes are run initially to import some useful packages and to set used settings.
+
+\begin{lstlisting}
+import time
+import numpy as np
+\end{lstlisting}
+
+\subsection{Composite Simpson's Rule}
+\label{SS:3.1}
+
+The Composite Simpson's rule is a \textit{piecewise} approach to numerical integration introdced to use the lower-order Newton-Cotes formulas. As is mentioned in Section \ref{SS:2.1}, if the interval of integration is in some sense "small", then Simpson's rule with subintervals will provide an adequate approximation to the exact integral. To verify the feasibility of this method, the integral in Eq. (\ref{eq:csr1}) has been devised to approximate within $10^{-5}$ by Composite Simpson's rule.
+
+\begin{equation}
+\label{eq:csr1}
+    \int^{2}_{0} \frac{1}{x+4} dx
+\end{equation}
+
+At first, the value of $n$ has to be determined and the error form of the Composite Simpson's rule is to be used. The error form for $f(x)=\frac{1}{x+4}$ on $[0,2]$ is
+
+\begin{equation}
+    \left|\frac{b-a}{180}h^{4}f^{(4)}(\mu)\right|=\left|\frac{4h^{4}}{15(x+4)^5}\right|.
+\end{equation}
+
+To ensure sufficient accuracy with this technique we need to have 
+
+\begin{equation}
+    \frac{4h^{4}}{15}\left|\frac{1}{(x+4)^5}\right|\leq\frac{h^4}{3840}\leq10^{-5}.
+\end{equation}
+
+Using again the fact that $h=\frac{2}{n}$ gives 
+
+\begin{equation}
+    \frac{1}{240 n^4}\leq10^{-5} \quad \Rightarrow \quad n > \frac{10}{24^{0.25}} \approx4.5180100180492.
+\end{equation}
+
+So Composite Simpson’s rule requires only even $n\geq6$. Composite Simpson’s rule with $n=6, h=\frac{1}{3}$ gives
+
+\begin{equation}
+    \int^{2}_{0} \frac{1}{x+4} dx \approx \frac{1}{9}\left(\frac{5}{12}+2\sum_{j=1}^{2}{\frac{1}{x_{2j}+4}}+4\sum_{j=1}^{3}{\frac{1}{x_{2j-1}+4}}\right)= 0.4054663746.
+\end{equation}
+
+This is accurate to within about $10^{-5}$ because the true value is
+
+\begin{equation}
+    \int^{2}_{0} \frac{1}{x+4} dx = \ln(\frac{3}{2}) \approx 0.4054651081.
+\end{equation}
+
+The results and errors are listed in Table \ref{tab:csr1}, and the codes for solving the problem are also shown below.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|l}
+\hline
+true value & 0.4054651081 \\
+approximation & 0.4054663746 \\
+absolute error & 0.0000012665 \\
+relative error & 0.0000031235 \\
+time (seconds) & 0.0002262000
+\end{tabular}
+\caption{Details of Numerical Integration of Eq. (\ref{eq:csr1})}
+\label{tab:csr1}
+\end{table}
+
+\begin{lstlisting}
+## Composite Simpson's Rule
+def f(x):
+    return 1 / (x + 4)
+
+a = 0
+b = 2
+n = 6
+h = (b - a) / n
+I = np.log(1.5)    # true value
+
+start = time.perf_counter()
+
+X = f(np.linspace(a, b, n+1))
+XI0 = X[0] + X[-1]
+XI1 = np.sum(X[1:-1:2])    # odd sum
+XI2 = np.sum(X[2:-1:2])    # even sum
+XI = h * (XI0 + 2 * XI2 + 4 * XI1) / 3
+
+elapsed = time.perf_counter() - start
+
+error1 = abs(XI - I)
+error2 = abs(XI - I) / abs(I)
+
+print('true value=%.10f' % I)
+print('approximation & %.10f \\\\' % XI)
+print('absolute error & %.10f \\\\' % error1)
+print('relative error & %.10f \\\\' % error2)
+print('time (seconds) & %.10f' % elapsed)
+\end{lstlisting}
+
+\subsection{Romberg Integration}
+\label{SS:3.2}
+
+To obtain high accuracy approximations with little computational cost, Richardson extrapolation can be applied to results from the Composite Trapezoidal rule. As is mentioned in Section \ref{SS:2.2}, it has indicated that the Composite Trapezoidal rule is an obvious candidate for extrapolation due to its form. This results in a technique known as Romberg integration. To verify the effectiveness of Romberg integration, an integral is designed in Eq. (\ref{eq:ri1}) and the goal is to obtain $R_{3,3}$.
+
+\begin{equation}
+\label{eq:ri1}
+    \int_{1}^{1.5}{x^{2}\ln x dx}
+\end{equation}
+
+The Composite Trapezoidal rule is used to find approximations to Eq. (\ref{eq:ri1}) with $n=1,2,and\,4$. Then Romberg extrapolation is performed on the results. The algorithm introduced in Section \ref{SS:2.2} is used to avoid too much memory cost so that the extrapolation process cannot be shown.
+
+The results and errors are listed in Table \ref{tab:ri2}, and the codes for solving the problem are also shown below.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|l}
+\hline
+true value & 0.1922593577 \\
+approximation & 0.1922593373 \\
+absolute error & 0.0000000204 \\
+relative error & 0.0000001062 \\
+time (seconds) & 0.0005621000
+\end{tabular}
+\caption{Details of Numerical Integration of Eq. (\ref{eq:ri1})}
+\label{tab:ri2}
+\end{table}
+
+\begin{lstlisting}
+## Romberg Integration
+def f(x):
+    return (x ** 2) * np.log(x)
+
+a = 1
+b = 1.5
+n = 3    # when n=5, error is too small
+I = 1.5 ** 3 / 3 * np.log(1.5) - 1 / 9 * (1.5 ** 3 - 1)    # true value
+
+start = time.perf_counter()
+
+h = b - a
+R = np.zeros([2, n])
+R[0, 0] = h * (f(a) + f(b)) / 2
+for i in range(1, n):
+    temp = np.array([a+(k-.5)*h for k in range(1, 2**(i-1)+1)])
+    R[1, 0] = (R[0, 0] + h * np.sum(f(temp))) / 2
+    for j in range(1, i+1):
+        R[1, j] = R[1, j-1] + (R[1, j-1] - R[0, j-1]) / (4 ** j - 1)
+    
+    h = h / 2
+    R[0] = R[1]
+
+elapsed = time.perf_counter() - start
+
+error1 = abs(R[-1, -1] - I)
+error2 = abs(R[-1, -1] - I) / abs(I)
+
+print('true value=%.10f' % I)
+print('approximation & %.10f \\\\' % R[-1, -1])
+print('absolute error & %.10f \\\\' % error1)
+print('relative error & %.10f \\\\' % error2)
+print('time (seconds) & %.10f' % elapsed)
+\end{lstlisting}
+
+\subsection{Composite Gaussian Quadrature}
+\label{SS:3.3}
+
+All the Newton-Cotes formulas use values of the function at equally-spaced points. This restriction is convenient can significantly decrease the accuracy of the approximation. As is mentioned in Section \ref{SS:2.3}, Gaussian quadrature is introduced to solve this problem and its composite form is also discussed. To verify the effectiveness of Composite Gaussian quadrature, the integral in Eq. (\ref{eq:cgq1}) will be approximated through this method and setting of $n=3$. And the exact value of it is $2 - \frac{5}{\mathrm{e}} \approx 0.16060$.
+
+\begin{equation}
+\label{eq:cgq1}
+    \int_{0}^{1}x^{2}\mathrm{e}^{-x} dx
+\end{equation}
+
+Let $f(x)=x^{2}\mathrm{e}^{-x},x_{k}=kh\,(k=0,1,\dots,n)$, where $h=\frac{1}{n}$, and apply the $2$-node Gaussian-Legendre Quadrature in $[x_{k},x_{k+1}]$:
+
+\begin{dmath}
+    \int_{x_k}^{x_{k+1}} f(x) dx \approx \frac{x_{k+1}-x_{k}}{2}\left[f\left(\frac{x_{k+1}+x_{k}}{2} + \frac{x_{k+1}-x_{k}}{2\sqrt3}\right) + f\left(\frac{x_{k+1}+x_{k}}{2} - \frac{x_{k+1}-x_{k}}{2\sqrt3}\right)\right].
+\end{dmath}
+
+We have the following Composite Gauss-Legendre Quadrature in $[0,1]$ (See Eq. (\ref{eq:cgq2})).
+
+\begin{equation}
+\label{eq:cgq2}
+    \int_{0}^{1}f(x) dx = \frac{h}{2}\sum_{k=0}^{n-1}\left[f\left(x_{k+\frac{1}{2}}+\frac{h}{2\sqrt 3}\right)+f\left(x_{k+\frac{1}{2}}-\frac{h}{2\sqrt 3}\right)\right]
+\end{equation}
+
+Run the programs below and the results of the experiments are listed in Table \ref{tab:cgq1}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|l}
+\hline
+true value & 0.1606027941 \\
+approximation & 0.1605868586 \\
+absolute error & 0.0000159356 \\
+relative error & 0.0000992235 \\
+time (seconds) & 0.0002956000
+\end{tabular}
+\caption{Details of Numerical Integration of Eq. (\ref{eq:ri1} with Gaussian-2-node)}
+\label{tab:cgq1}
+\end{table}
+
+\begin{lstlisting}
+## Composite Gaussian Quadrature with 2-node
+def f(x):
+    return np.exp(-x) * x ** 2
+
+a = 0
+b = 1
+n = 3
+h = (b - a) / n
+I = 2 - 5 / np.e   # true value
+
+start = time.perf_counter()
+
+X = np.linspace(a, b, n+1)[:-1] + .5 * h
+X1 = f(X + h / (2 * np.sqrt(3)))
+X2 = f(X - h / (2 * np.sqrt(3)))
+XI = h * np.sum(X1 + X2) / 2
+
+elapsed = time.perf_counter() - start
+
+error1 = abs(XI - I)
+error2 = abs(XI - I) / abs(I)
+
+
+print('true value=%.10f' % I)
+print('approximation & %.10f \\\\' % XI)
+print('absolute error & %.10f \\\\' % error1)
+print('relative error & %.10f \\\\' % error2)
+print('time (seconds) & %.10f' % elapsed)
+\end{lstlisting}
+
+We can also equally divided $[0,1]$ into $2n$ parts. Let $x_{k}=kh\,(k=0,1,\dots,2n)$, where $h=\frac{1}{2n}$, and use the $3$-node Gauss-Legendre Quadrature in $[x_{k}, x_{k+2}]$,
+
+\begin{dmath}
+    \int_{x_k}^{x_{k+2}} f(x) dx \approx \frac{x_{k+2}-x_{k}}{2}\left\{ 
+    \frac{5}{9} \left[
+    f\left(\frac{x_{k+2}+x_{k}}{2} + \frac{x_{k+2}-x_{k}}{2}\sqrt{\frac{3}{5}}\right) + \\
+    f\left(\frac{x_{k+2}+x_{k}}{2} - \frac{x_{k+2}-x_{k}}{2}\sqrt{\frac{3}{5}}\right)
+    \right]+\frac{8}{9}f(x_{k+1})\right\},
+\end{dmath}
+
+then we have 
+
+\begin{dmath}
+    \int_{0}^{1} f(x) dx \approx \frac{h}{9}\sum_{k=0}^{n-1}\left\lbrace 5\left[f\left(x_{2k+1} + h\sqrt{\frac{3}{5}}\right) + f\left(x_{2k+1} - h\sqrt{\frac{3}{5}}\right)\right]+8f(x_{2k+1})\right\rbrace.
+\end{dmath}
+
+Similarly, run changed program below and the results of the experiments are shown in Table \ref{tab:cgq2}.
+
+\begin{lstlisting}
+## Composite Gaussian Quadrature with 3-node
+def f(x):
+    return np.exp(-x) * x ** 2
+
+a = 0
+b = 1
+n = 3
+h = (b - a) / (2 * n)
+I = 2 - 5 / np.e   # true value
+
+start = time.perf_counter()
+
+X = np.array([a + (2 * k + 1) * h for k in range(n)])
+X1 = f(X + h * np.sqrt(0.6))
+X2 = f(X - h * np.sqrt(0.6))
+X3 = f(X)
+XI = h * np.sum(5 * (X1 + X2) + 8 * X3) / 9
+
+elapsed = time.perf_counter() - start
+
+error1 = abs(XI - I)
+error2 = abs(XI - I) / abs(I)
+
+print('true value=%.10f' % I)
+print('approximation & %.10f \\\\' % XI)
+print('absolute error & %.10f \\\\' % error1)
+print('relative error & %.10f \\\\' % error2)
+print('time (seconds) & %.10f' % elapsed)
+\end{lstlisting}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|l}
+\hline
+true value & 0.1606027941 \\
+approximation & 0.1606027834 \\
+absolute error & 0.0000000108 \\
+relative error & 0.0000000671 \\
+time (seconds) & 0.0002515000
+\end{tabular}
+\caption{Details of Numerical Integration of Eq. (\ref{eq:ri1} with Gaussian-3-node)}
+\label{tab:cgq2}
+\end{table}
+
+\section{Comparison}
+\label{S:4}
+
+In previous section, the effectiveness of three methods has been verified and the comparison between those methods is to be done in this section. To achieve the comparison, an integral in Eq. (\ref{eq:comparison1}) is designed and those methods will be applied to it respectively. 
+
+\begin{equation}
+\label{eq:comparison1}
+    \int_{0}^{0.35} \frac{2}{x^{2}-4} dx = \frac{1}{2}\ln(\frac{2-0.35}{2+0.35}) \approx -0.17682
+\end{equation}
+
+After some trivial changes of programs, the results and errors are obtained, which are also listed in Table \ref{tab:comparison1}.
+
+\begin{lstlisting}
+## Comparison
+def f(x):
+    return 2 / (x ** 2 - 4)
+
+a = 0
+b = .35
+I = .5 * np.log((2 - .35) / (2 + .35))    # true value
+
+# Simpson
+n = 6
+h = (b - a) / n
+
+start = time.perf_counter()
+
+X = f(np.linspace(a, b, n+1))
+XI0 = X[0] + X[-1]
+XI1 = np.sum(X[1:-1:2])    # odd sum
+XI2 = np.sum(X[2:-1:2])    # even sum
+XI_S = h * (XI0 + 2 * XI2 + 4 * XI1) / 3
+
+elapsed_S = time.perf_counter() - start
+
+error1_S = abs(XI_S - I)
+error2_S = abs(XI_S - I) / abs(I)
+
+# Romberg
+n = 3
+
+start = time.perf_counter()
+
+h = b - a
+R = np.zeros([2, n])
+R[0, 0] = h * (f(a) + f(b)) / 2
+for i in range(1, n):
+    temp = np.array([a+(k-.5)*h for k in range(1, 2**(i-1)+1)])
+    R[1, 0] = (R[0, 0] + h * np.sum(f(temp))) / 2
+    for j in range(1, i+1):
+        R[1, j] = R[1, j-1] + (R[1, j-1] - R[0, j-1]) / (4 ** j - 1)
+    
+    h = h / 2
+    R[0] = R[1]
+
+elapsed_R = time.perf_counter() - start
+
+error1_R = abs(R[-1, -1] - I)
+error2_R = abs(R[-1, -1] - I) / abs(I)
+
+## Composite Gaussian Quadrature with 2-node
+n = 3
+h = (b - a) / n
+
+start = time.perf_counter()
+
+X = np.linspace(a, b, n+1)[:-1] + .5 * h
+X1 = f(X + h / (2 * np.sqrt(3)))
+X2 = f(X - h / (2 * np.sqrt(3)))
+XI_G2 = h * np.sum(X1 + X2) / 2
+
+elapsed_G2 = time.perf_counter() - start
+
+error1_G2 = abs(XI_G2 - I)
+error2_G2 = abs(XI_G2 - I) / abs(I)
+
+## Composite Gaussian Quadrature with 3-node
+n = 3
+h = (b - a) / (2 * n)
+
+start = time.perf_counter()
+
+X = np.array([a + (2 * k + 1) * h for k in range(n)])
+X1 = f(X + h * np.sqrt(0.6))
+X2 = f(X - h * np.sqrt(0.6))
+X3 = f(X)
+XI_G3 = h * np.sum(5 * (X1 + X2) + 8 * X3) / 9
+
+elapsed_G3 = time.perf_counter() - start
+
+error1_G3 = abs(XI_G3 - I)
+error2_G3 = abs(XI_G3 - I) / abs(I)
+
+# output results
+print('true value=%.10f' % I)
+
+print('\\textbf{} & \\textbf{Simpson} & \\textbf{Romberg} & \\textbf{Gaussian-2} & \\textbf{Gaussian-3} \\\\')
+print('approximation & {0:.10f} & {1:.10f} & {2:.10f} & {3:.10f} \\\\'.format(XI_S, R[-1, -1], XI_G2, XI_G3))
+print('absolute error & {0:.10f} & {1:.10f} & {2:.10f} & {3:.10f} \\\\'.format(error1_S, error1_R, error1_G2, error1_G3))
+print('relative error & {0:.10f} & {1:.10f} & {2:.10f} & {3:.10f} \\\\'.format(error2_S, error2_R, error2_G2, error2_G3))
+print('time (seconds) & {0:.10f} & {1:.10f} & {2:.10f} & {3:.10f}'.format(elapsed_S, elapsed_R, elapsed_G2, elapsed_G3))
+\end{lstlisting}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|l l l l}
+ & \textbf{Simpson} & \textbf{Romberg} & \textbf{Gauss-2} & \textbf{Gauss-3} \\
+\hline
+approx & -0.17682004 & -0.17682002 & -0.17682001 & -0.17682002 \\
+absError & 0.00000002 & 0.00000000 & 0.00000001 & 0.00000000 \\
+relError & 0.00000011 & 0.00000001 & 0.00000007 & 0.00000000 \\
+time(sec) & 0.00037620 & 0.00046660 & 0.00038660 & 0.00037710
+\end{tabular}
+\caption{Comparison between Three Methods Applied to Eq. (\ref{eq:comparison1})}
+\label{tab:comparison1}
+\end{table}
+
+As is depicted in Table \ref{tab:comparison1}, Composite Gaussian quadrature has performed best and Composite Simpson's rule has performed comparatively worst. But the difference of accuracy of those methods are not significant. On the other hand, time cost of those methods are shown as well. It can be observed that Romberg integration spend most time to approximate and other methods' performance is similar.
+
+\section{Conclusion}
+\label{S:5}
+
+In this report, approximating integrals of functions of one variables has been considered. The Simpson’s rule has been studied to introduce the techniques and error analysis of quadrature methods. Composite Simpson’s rule is easy to use and produces accurate approximations unless the function oscillates in a subinterval of the interval of integration. Romberg integration has been introduced to take advantage of the easily applied Composite Trapezoidal rule and extrapolation. To minimize the number of nodes while maintaining accuracy, Gaussian quadrature has also been used.
+
+After the introduction of those methods, several experiments have been made to verify the effectiveness and robustness of them. Based on results of the experiments, it fair to say that those methods are very powerful and accurate. Also, some additional experiments have been made to compare the efficiency and accuracy of those methods. It can be observed that Composite Gaussian quadrature can perform best and it takes most time to use Romberg integration.
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+% \appendix
+
+% \section{}
+% \label{}
+
+%% References
+%%
+%% Following citation commands can be used in the body text:
+%% Usage of \cite is as follows:
+%%   \cite{key}          ==>>  [#]
+%%   \cite[chap. 2]{key} ==>>  [#, chap. 2]
+%%   \citet{key}         ==>>  Author [#]
+
+%% References with bibTeX database:
+
+\bibliographystyle{model1-num-names}
+\bibliography{ref}
+
+%% Authors are advised to submit their bibtex database files. They are
+%% requested to list a bibtex style file in the manuscript if they do
+%% not want to use model1-num-names.bst.
+
+%% References without bibTeX database:
+
+% \begin{thebibliography}{00}
+
+%% \bibitem must have the following form:
+%%   \bibitem{key}...
+%%
+
+% \bibitem{}
+
+% \end{thebibliography}
+
+
+\end{document}
