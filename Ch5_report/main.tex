@@ -1,0 +1,666 @@
+\documentclass[preprint,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+%% The graphicx package provides the includegraphics command.
+\usepackage{graphicx}
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+% \usepackage{lineno}
+
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{breqn}
+
+%% add pseudo codes
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+\floatname{algorithm}{Algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{INPUT:}}
+\renewcommand{\algorithmicensure}{\textbf{OUTPUT:}}
+
+%% add python codes
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%
+%% \biboptions{comma,round}
+
+% \biboptions{}
+
+\journal{}
+
+\begin{document}
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+\title{Initial-Value Problems for Ordinary Differential Equations}
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+\author{ChaosWsF}
+
+\address{No.,  University}
+
+\begin{abstract}
+%% Text of abstract
+The purpose of this article is to approximate the solution of ordinary differential equations with initial value by numerical method. Taken the accuracy and popularity into consideration, there are three methods discussed in the article, namely Runge-Kutta method, Adams fourth-order method and the skills used to solve the stiff equation. Then several experiments have been made to verify the effectiveness of those numerical methods. Based on results of those experiments, it can be observed that those methods are effective and useful.
+\end{abstract}
+
+\begin{keyword}
+Runge-Kutta Method \sep Multistep Method \sep Stiff ODE
+%% keywords here, in the form: keyword \sep keyword
+
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+
+\end{keyword}
+
+\end{frontmatter}
+
+%%
+%% Start line numbering here if you want
+%%
+% \linenumbers
+
+%% main text
+\section{Introduction}
+\label{S:1}
+
+Numerical methods for ordinary differential equations are methods used to find numerical approximations to the solutions of ordinary differential equations (ODEs). Their use is also known as "numerical integration", although this term is sometimes taken to mean the computation of integrals.
+
+Many differential equations cannot be solved using symbolic computation. For practical purposes, however, such as in engineering, a numeric approximation to the solution is often sufficient. The algorithms studied here can be used to compute such an approximation. An alternative method is to use techniques from calculus to obtain a series expansion of the solution.
+
+Ordinary differential equations occur in many scientific disciplines, for instance in physics, chemistry, biology, and economics. In addition, some methods in numerical partial differential equations convert the partial differential equation into an ordinary differential equation, which must then be solved.
+
+Below is a timeline of some important developments in this field.
+
+\begin{itemize}
+  \item 1768 - Leonhard Euler publishes his method.
+  \item 1824 - Augustin Louis Cauchy proves convergence of the Euler method. In this proof, Cauchy uses the implicit Euler method.
+  \item 1855 - First mention of the multistep methods of John Couch Adams in a letter written by F. Bashforth.
+  \item 1895 - Carl Runge publishes the first Runge–Kutta method.
+  \item 1901 - Martin Kutta describes the popular fourth-order Runge–Kutta method.
+  \item 1910 - Lewis Fry Richardson announces Richardson extrapolation.
+  \item 1952 - Charles F. Curtiss and Joseph Oakland Hirschfelder coin the term stiff equations.
+  \item 1963 - Germund Dahlquist introduces A-stability of integration methods.
+\end{itemize}
+
+In Section \ref{S:1}, the background and some history  have been recalled. In Section \ref{S:2}, several methods of solving ODE numerically are to be introduced and their formulas are to be interpreted. In Section \ref{S:3}, several experiments are designed to verify the efficiency of those methods and their error is also listed. In Section \ref{S:4}, the conclusion of the article has been made.
+
+\section{Methodologies}
+\label{S:2}
+
+There are several numerical methods to obtain the solutions of ODE, which have been introduced in \cite{burden:2001na}. In this section, three methods are to be illustrated, due to their popularity and accuracy.
+
+\begin{itemize}
+\item Runge–Kutta method
+\item Multistep method
+\item Trapezoidal with Newton iteration
+\end{itemize}
+
+All these methods can be used to achieve numerical solutions of ODE within reasonable given accuracy.
+
+\subsection{Runge–Kutta Method}
+\label{SS:2.1}
+
+The Taylor methods have the desirable property of high-order local truncation error, but the disadvantage of requiring the computation and evaluation of the derivatives of $f(t,y)$. This is a complicated and time-consuming procedure for most problems, so the Taylor methods are seldom used in practice.
+
+\textbf{Runge-Kutta methods} have the high-order local truncation error of the Taylor methods while eliminating the need to compute and evaluate the derivatives of $f(t,y)$. Before presenting the ideas behind their derivation, we need to state Taylor's Theorem in two variables.
+
+The most common Runge-Kutta method in use is of order four, and is given by the following in difference-equation form. The pseudo codes are shown in Algorithm \ref{algo:runge_kutta}.
+
+\begin{eqnarray*}
+  w_0 &=& \alpha, \\
+  &&K_1 = hf(t_i,w_i), \\
+  &&K_2 = hf(t_i+\frac{h}{2},w_i+\frac{1}{2}K_1), \\
+  &&K_3 = hf(t_i+\frac{h}{2},w_i+\frac{1}{2}K_2), \\
+  &&K_4 = hf(t_{i+1},w_i+K_3),\\
+  w_{i+1}&=& w_i+\frac{1}{6}(K_1+2K_2+2K_3+K_4),\\
+  && i=0,1,\cdots,N-1.
+\end{eqnarray*}
+
+\begin{algorithm}
+  \caption{Runge-Kutta (Order Four)}
+  \label{algo:runge_kutta}
+  \begin{algorithmic}[1]
+  \Require endpoints $a,b$; integer $N$; initial condition $\alpha$
+  \Ensure approximation $w$ to $y$ at the $(N+1)$ values of $t$
+  \State $h\gets (b-a)/N$
+  \State $t\gets a$
+  \State $w\gets \alpha$
+  \State OUTPUT $(t,w)$
+  \For {$i=1,2,\dots,N$}
+    \State $K_1 \gets hf(t,w)$
+    \State $K_2 \gets hf(t+h/2 ,w+K_1 / 2)$
+    \State $K_3 \gets hf(t+h/2 ,w+K_2 / 2)$
+    \State $K_4 \gets hf(t+h,w+K_3)$
+    \State $w\gets w+(K_{1}+2K_{2}+2K_{3}+K_4)/6$
+    \State $t\gets a+ih$
+    \State OUTPUT $(t,w)$
+  \EndFor
+  \State STOP
+  \end{algorithmic}
+\end{algorithm}
+
+
+\subsection{Multistep Method}
+\label{SS:2.2}
+
+The methods discussed in previous sections in the article are called \textbf{one-step methods}, because the approximation for the mesh point $t_{i+1}$ involves information from only one of the previous mesh points, $t_i$. Although Runge-Kutta methods can use functional evaluation information at points between $t_i$ and $t_{i+1}$, they do not retain that information for direct use in future approximations, so they still are one-step-methods.
+
+All the information used by these methods is obtained within the subinterval over which the solution is being approximated. Since the approximate solution is available at each of the mesh points $t_0,t_1,\cdots,t_i$ before the approximation at $t_{i+1}$ is obtained and because the error $|w_i - y(t_i)|$ tends to increase with $i$. It seems reasonable to develop methods that use these more accurate previous data when approximating the solution at $t_{i+1}$ .
+
+Methods using the approximation at more than one previous mesh point to determine the approximation at the next point are called \textbf{multistep methods}. The precise definition of these methods follows, together with the definition of the two types of \textbf{multistep methods}.
+
+The combination of an explicit and implicit technique is called \textbf{predictor corrector method}. The explicit method predicts an approximation, and the implicit method corrects this prediction.
+
+Consider the following fourth-order method for solving an initial-value problem. The first step is to calculate the starting values $w_0, w_1, w_2$, and $w_3$ for the four-step Adams-Bashforth method. To do this, we use a fourth-order one-step method, the Runge-Kutta method of order four.
+
+The next step is to calculate an approximation, $w_4^{(0)}$, to $y(t_4)$ using the four-step Adams-Bashforth method as predictor:
+
+\begin{eqnarray*}
+  w^{(0)}_{4} &=& w_3+\frac{h}{24}[55f(t_{3},w_{3})-59f(t_{2},w_{2}))+\nonumber \\
+   && +37f(t_{1},w_{1}))-9f(t_{0},w_{0}))].
+\end{eqnarray*}
+
+This approximation is improved by inserting $w^{(0)}_4$ in the right side of the three-step Adams-Moulton method and using that method as a corrector:
+
+\begin{eqnarray*}
+  w_4^{(1)} &=& w_3+\frac{h}{24}[9f(t_4,w_4^{(0)})+ 19f(t_3,w_3)\nonumber \\
+  &&-5f(t_2,w_2)+f(t_1,w_1)].
+\end{eqnarray*}
+
+The only new function evaluation required is $f(t_4,w_4^{(0)})$.
+
+The value $ w_4^{(1)}$ is then used as the approximation to $y(t_4)$, and the predictor corrector procedure can be repeated to find $w_5^{(0)}$ and $w_5^{(1)}$, the initial and final approximations to $y(t_5)$, etc.
+
+Improved approximations to $y(t_{i+1})$ could be obtained by iterating the Adams-Moulton formula
+
+\begin{eqnarray*}
+  w_{i+1}^{(k+1)} &=& w_i^{(k)}+\frac{h}{24}[9f(t_{i+1},w_{i+1}^{(k)})+ 19f(t_{i},y_{i})\nonumber \\
+  &&-5f(t_{i-1},y_{i-1})+f(t_{i-2},y_{i-2})],\quad k=0,1,2,\cdots.
+\end{eqnarray*}
+
+However, $\{y_{i+1}^{(k+1)}\}$ converges to the approximation given by the implicit formula rather than to the solution $y(t_{i+1})$, and it is usually more efficient to use a reduction in the step size if improved accuracy is needed. The pseudo codes are listed in Algorithm \ref{algo:multistep}.
+
+\begin{algorithm}
+  \caption{Adams Fourth-Order Predictor-Corrector}
+  \label{algo:multistep}
+  \begin{algorithmic}[1]
+  \Require endpoints $a,b$; integer $N$; initial condition $\alpha$
+  \Ensure approximation $w$ to $y$ at the $(N+1)$ values of $t$
+  \State $h\gets (b-a)/N$
+  \State $t_0 \gets a$
+  \State $w_0 \gets \alpha$
+  \State OUTPUT $(t_0 , w_0)$
+  \For {$i=1,2,3$}
+    \State $K_1 \gets hf(t_{i-1},w_{i-1})$
+    \State $K_2 \gets hf(t_{i-1}+h/2,w_{i-1}+K_{1}/2)$
+    \State $K_1 \gets hf(t_{i-1}+h/2,w_{i-1}+K_{2}/2)$
+    \State $K_1 \gets hf(t_{i-1}+h,w_{i-1}+K_3)$
+    \State $w_i \gets w_{i-1}+(K_{1}+2K_{2}+2K_{3}+K_{4})/6$
+    \State $t_i = a + ih$
+    \State OUTPUT $(t_i , w_i)$
+  \EndFor
+  \For {$i=4,\dots,N$}
+    \State $t\gets a+ih$
+    \State $w\gets w_{3}+h[55f(t_{3},w_{3})-59f(t_{2},w_{2})+37f(t_{1},w_{1})-9f(t_{0},w_{0})]/24$
+    \State $w\gets w_{3}+h[9f(t,w)+19f(t_{3},w_{3})-5f(t_{3},w_{3})+f(t_{1},w_{1})]/24$
+    \State OUTPUT $(t,w)$
+    \For {$j=0,1,2$}
+      \State $t_j \gets t_{j+1}$
+      \State $w_j \gets w_{j+1}$
+    \EndFor
+    \State $t_3 \gets t$
+    \State $w_3 \gets w$
+  \EndFor
+  \State STOP
+  \end{algorithmic}
+\end{algorithm}
+
+\subsection{Trapezoidal with Newton Iteration}
+\label{SS:2.3}
+
+All the methods for approximating the solution to initial-value problems have error terms that involve a \textbf{higher derivative} of the solution of the equation. If the derivative can be reasonable bounded, then the method will have a predictable error bound that can be used to estimate the accuracy of the approximation. Even if the derivative grows as the steps increase, the error can be kept in relative control, provided that the solution also grows in magnitude. Problems frequently arise, however, when the magnitude of the derivative increases but the solution does not. In this situation, the error can grow so large that it dominateds the calculations. Initial-value problems for which this is likely to occur are called \textbf{stiff equations}.
+
+Stiff differential equations are characterized as those whose exact solution has a term of the form $e^{-ct}$, where $c$ is a large positive constant. This is usually only a part of the solution, called the blue \textit{transient} solution. The more important portion of the solution is called the \textit{steady-state} solution. The transient portion of a stiff equation will rapidly decay to zero as $t$ increases, but since the $n$th derivative of this term has magnitude $c^n e^{-ct}$, the derivative does not decay as quickly. In fact, since the derivative in the error term is evaluated not at $t$, but at a number between zero and $t$, the derivative terms can increase very rapidly indeed.
+
+Problems involving rapidly decaying transient solutions occur naturally in a wide variety of applications, including the study of spring and damping systems, the analysis of control systems, and problems in chemical reactions, etc.
+
+In such problems, the numerical method should approximate the steady-state portion of the solution, but unless care is taken, the error associated with the decaying transient portion will dominate the calculations and produce meaningless results. Fortunately, stiff equations generally can be predicted from the physical problem from which the equation is derived and, with care, the error can be kept under control.
+
+The techniques commonly used for stiff systems are implicit multistep methods. Generally, $w_{i+1}$ is obtained by solving a nonlinear equation or nonlinear system iteratively, often by Newton's method. Consider, for example, the Implicit Trapezoidal method
+
+$$
+w_{j+1} = w_j +\frac{h}{2} [f(t_{j+1},w_{j+1})+f(t_j,w_j)].
+$$
+
+We determine $w_{j+1}$ by solve the equation
+
+$$
+F(w) = w- w_j -\frac{h}{2} [f(t_{j+1},w)+f(t_j,w_j)] =0.
+$$
+
+To approximate this solution, select $w_{j+1}^{(0)}$, usually as $w_j$, and generate $w_{j+1}^{(k)}$ by applying Newton's method,
+
+$$
+\begin{array}{lll}
+w_{j+1}^{(k)} & = & w_{j+1}^{(k-1)} - \dfrac{F(w_{j+1}^{(k-1)})}{F'(w_{j+1}^{(k-1)})} \\[10pt]
+& = & w_{j+1}^{(k-1)} - \dfrac{w_{j+1}^{(k-1)}-w_j
+-\frac{h}{2}[f(t_j,w_j)+f(t_{j+1},w_{j+1}^{(k-1)})]}
+{1-\frac{h}{2}f_y(t_{j+1},w_{j+1}^{(k-1)})}
+\end{array}
+$$
+
+until $w_{j+1}^{(k)} -w_{j+1}^{(k-1)}$ is sufficiently small. This is the procedure that is used in Algorithm \ref{algo:stiff}. Normally only three or four iterations per step are required.
+
+\begin{algorithm}
+  \caption{Trapezoidal with Newton Iteration}
+  \label{algo:stiff}
+  \begin{algorithmic}[1]
+  \Require $a,b,N,\alpha,TOL,M$
+  \Ensure $w$ or a message of failure
+  \State $h\gets (b-a)/N$
+  \State $t\gets a$
+  \State $w\gets \alpha$
+  \State OUTPUT $(t,w)$
+  \For {$i=1,2,\dots,N$}
+    \State $k_1 \gets w+\frac{h}{2}f(t,w)$
+    \State $w_0 \gets k_1$
+    \State $j\gets 1$
+    \State $FLAG\gets 0$
+    \While {$FLAG=0$}
+      \State $w\gets w_{0}-\frac{w_{0}-\frac{h}{2}f(t+h,w_0)-k_1}{1-\frac{h}{2}f_{y}(t+h,w_0)}$
+      \If {$|w-w_0|<TOL$}
+        \State $FLAG\gets 1$
+      \Else
+        \State $j\gets j+1$
+        \State $w_0 \gets w$
+        \If {$j>M$}
+          \State OUTPUT Failure
+          \State STOP
+        \EndIf
+      \EndIf
+    \EndWhile
+    \State $t\gets a+ih$
+    \State OUTPUT $(t,w)$
+  \EndFor
+  \State STOP
+  \end{algorithmic}
+\end{algorithm}
+
+
+\section{Experiments}
+\label{S:3}
+
+In this section, there are several experiments made to verify efficiency and robustness of three methods to get the values of ODE numerically, which have been introduced in Section \ref{S:2}. To obtain the results of experiments, some programs are written in Python and the following codes are run initially to import some useful packages and to set used settings.
+
+\begin{lstlisting}
+import numpy as np
+\end{lstlisting}
+
+\subsection{Runge-Kutta Method}
+\label{SS:3.1}
+
+An example is shown below to test the effectiveness of Runge-Kutta. The equation (\ref{eq:runge_kutta1}) to be solved is going to be solved by Runge-Kutta with order four. And the actual solution is $y(t)=t+\frac{1}{1-t}$.
+
+\begin{equation}
+\label{eq:runge_kutta1}
+  y' = 1 + (t - y) ^ {2},\quad 2\leq t\leq 3,\quad y(2)=1,\,\mathrm{with}\,N=10
+\end{equation}
+
+And the results are shown in Table \ref{tab:runge_kutta}.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{c c c c}
+    \hline
+    $t_i$ & Exact $y_i$ & $w_i$ & AbsErr \\
+    \hline
+    2.0 & 1.0000000 & 1.0000000 & 0.0 \\
+    2.1 & 1.1909091 & 1.1909088 & 0.0000003 \\
+    2.2 & 1.3666667 & 1.3666663 & 0.0000004 \\
+    2.3 & 1.5307692 & 1.5307688 & 0.0000004 \\
+    2.4 & 1.6857143 & 1.6857138 & 0.0000004 \\
+    2.5 & 1.8333333 & 1.8333329 & 0.0000004 \\
+    2.6 & 1.9750000 & 1.9749996 & 0.0000004 \\
+    2.7 & 2.1117647 & 2.1117643 & 0.0000004 \\
+    2.8 & 2.2444444 & 2.2444441 & 0.0000003 \\
+    2.9 & 2.3736842 & 2.3736839 & 0.0000003 \\
+    3.0 & 2.5000000 & 2.4999997 & 0.0000003
+  \end{tabular}
+  \caption{Runge-Kutta Order Four}
+  \label{tab:runge_kutta}
+\end{table}
+
+The program of the experiment is also shown below.
+\begin{lstlisting}
+def func1(t, y):
+  return 1 + (t - y) ** 2
+
+
+def sol1(t):
+    return t + 1 / (1 - t)
+
+a = 2
+b = 3
+N = 10
+alpha = 1
+
+h = (b - a) / N
+t = a
+w = alpha
+y = sol1(t)
+error = abs(y - w)
+print('{0:.1f} & {1:.7f} & {2:.7f} & {3} \\\\'.format(t, y, w, error))
+
+for _ in range(N):
+    K_1 = h * func1(t, w)
+    K_2 = h * func1(t + h / 2, w + K_1 / 2)
+    K_3 = h * func1(t + h / 2, w + K_2 / 2)
+    K_4 = h * func1(t + h, w + K_3)
+    w += (K_1 + 2*K_2 + 2*K_3 + K_4) / 6
+    t += h
+    y = sol1(t)
+    error = abs(y - w)
+    print('{0:.1f} & {1:.7f} & {2:.7f} & {3:.7f} \\\\'.format(t, y, w, error))
+
+\end{lstlisting}
+
+\subsection{Adams Fourth-Order Predictor-Corrector}
+\label{SS:3.2}
+
+The equation (\ref{eq:adams1}) is used to verify the effectiveness of the multistep methods. The actual solution of the equation is $y(t)=t\ln{t} + 2t$.
+
+\begin{equation}
+\label{eq:adams1}
+  y' = 1 + \frac{y}{t},\quad 1\leq t\leq 2,\quad y(1)=2,\, \mathrm{with}\,N=10
+\end{equation}
+
+The results of the experiment is shown in Table \ref{tab:adams}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{cccc}
+    \hline
+    $t_i$ & $y_i$ & $w_i$ & AbsErr \\
+    \hline
+    1.0 & 2.0000000 & 2.0000000 & 0.0 \\
+    1.1 & 2.3048412 & 2.3048409 & 0.0000003 \\
+    1.2 & 2.6187859 & 2.6187854 & 0.0000005 \\
+    1.3 & 2.9410735 & 2.9410729 & 0.0000007 \\
+    1.4 & 3.2710611 & 3.2710601 & 0.0000010 \\
+    1.5 & 3.6081977 & 3.6081963 & 0.0000014 \\
+    1.6 & 3.9520058 & 3.9520041 & 0.0000017 \\
+    1.7 & 4.3020680 & 4.3020661 & 0.0000020 \\
+    1.8 & 4.6580160 & 4.6580138 & 0.0000022 \\
+    1.9 & 5.0195224 & 5.0195199 & 0.0000025 \\
+    2.0 & 5.3862944 & 5.3862917 & 0.0000027
+  \end{tabular}
+  \caption{Multistep Methods}
+  \label{tab:adams}
+\end{table}
+
+The programs used in the experiment are also shown below.
+
+\begin{lstlisting}
+def func2(t, y):
+  return 1 + y / t
+
+
+def sol2(t):
+    return t * np.log(t) + 2 * t
+
+a = 1
+b = 2
+N = 10
+alpha = 2
+
+h = (b - a) / N
+t = a
+w = alpha
+y = sol2(t)
+error = abs(y - w)
+print('{0:.1f} & {1:.7f} & {2:.7f} & {3} \\\\'.format(t, y, w, error))
+
+tLi = [t]
+wLi = [w]
+for _ in range(3):
+    K_1 = h * func2(t, w)
+    K_2 = h * func2(t + h / 2, w + K_1 / 2)
+    K_3 = h * func2(t + h / 2, w + K_2 / 2)
+    K_4 = h * func2(t + h, w + K_3)
+    w += (K_1 + 2*K_2 + 2*K_3 + K_4) / 6
+    t += h
+
+    tLi.append(t)
+    wLi.append(w)
+
+    y = sol2(t)
+    error = abs(y - w)
+    print('{0:.1f} & {1:.7f} & {2:.7f} & {3:.7f} \\\\'.format(t, y, w, error))
+
+for _ in range(3, N):
+    t += h
+    w = wLi[3] + h * (55 * func2(tLi[3], wLi[3]) - 59 * func2(tLi[2], wLi[2]) + 37 * func2(tLi[1], wLi[1]) - 9 * func2(tLi[0], wLi[0])) / 24
+    w = wLi[3] + h * (9 * func2(t, w) + 19 * func2(tLi[3], wLi[3]) - 5 * func2(tLi[2], wLi[2]) + func2(tLi[1], wLi[1])) / 24
+    y = sol2(t)
+    error = abs(y - w)
+    print('{0:.1f} & {1:.7f} & {2:.7f} & {3:.7f} \\\\'.format(t, y, w, error))
+    
+    tLi.pop(0)
+    wLi.pop(0)
+    tLi.append(t)
+    wLi.append(w)
+\end{lstlisting}
+
+\subsection{Trapezoidal with Newton Iteration}
+\label{SS:3.3}
+
+The equation (\ref{eq:stiff1}) is designed to verify the robustness of the method specific to the stiff ODE. The actual solution is $y(t)=t^{2}+\frac{1}{3}\mathrm{e}^{-20t}$.
+
+\begin{equation}
+\label{eq:stiff1}
+  y' = -20(y-t^{2}) + 2t,\quad 0\leq t\leq 1,\quad y(0)=\frac{1}{3},\,\mathrm{with}\,N=10
+\end{equation}
+
+We also set $TOL=10^{-6}$ and $M=10$. The results of the experiment are also shown in Table \ref{tab:stiff}.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{cccc}
+    \hline
+    $t_i$ & $y_i$ & $w_i$ & AbsErr \\
+    \hline
+    0.0 & 0.3333333 & 0.3333333 & 0.0 \\
+    0.1 & 0.0551118 & 0.0100000 & 0.0451118 \\
+    0.2 & 0.0461052 & 0.0400000 & 0.0061052 \\
+    0.3 & 0.0908263 & 0.0900000 & 0.0008263 \\
+    0.4 & 0.1601118 & 0.1600000 & 0.0001118 \\
+    0.5 & 0.2500151 & 0.2500000 & 0.0000151 \\
+    0.6 & 0.3600020 & 0.3600000 & 0.0000020 \\
+    0.7 & 0.4900003 & 0.4900000 & 0.0000003 \\
+    0.8 & 0.6400000 & 0.6400000 & 0.0000000 \\
+    0.9 & 0.8100000 & 0.8100000 & 0.0000000 \\
+    1.0 & 1.0000000 & 1.0000000 & 0.0000000
+  \end{tabular}
+  \caption{Stiff ODE}
+  \label{tab:stiff}
+\end{table}
+
+The programs of the experiment are also shown below.
+
+\begin{lstlisting}
+def func3(t, y):
+  return -20 * (y - t ** 2) + 2 * t
+
+
+def func3dy(t, y):
+  return -20
+
+
+def sol3(t):
+  return t ** 2 + (1 / 3) * np.exp(-20 * t)
+
+a = 0
+b = 1
+N = 10
+alpha = 1 / 3
+TOL = 1e-6
+M = 10
+
+h = (b - a) / N
+t = a
+w = alpha
+y = sol3(t)
+error = abs(y - w)
+print('{0:.1f} & {1:.7f} & {2:.7f} & {3} \\\\'.format(t, y, w, error))
+
+for _ in range(N):
+  k_1 = w + h * func3(t, w) / 2
+  w_0 = k_1
+  j = 1
+  FLAG = 0
+  while FLAG == 0 and j <= M:
+      w = w_0 - (w_0 - h * func3(t + h, w_0) / 2 - k_1) / (1 - h * func3dy(t+h, w_0) / 2)
+      if abs(w - w_0) < TOL:
+          FLAG = 1
+      else:
+          j += 1
+          w_0 = w
+  
+  if j > M:
+      print('The maxmum number of iterations exceeded')
+  
+  t += h
+  y = sol3(t)
+  error = abs(y - w)
+  print('{0:.1f} & {1:.7f} & {2:.7f} & {3:.7f} \\\\'.format(t, y, w, error))
+\end{lstlisting}
+
+\section{Conclusion}
+\label{S:4}
+
+In this article, we have considered methods to approximate the solutions to initial-value problems for ordinary differential equations. We began with the Runge-Kutta formulas simplified the Taylor methods, without increasing the order of the error. Multistep methods are also discussed, where explicit methods of Adams-Bashforth type and implicit methods of Adams-Moulton type were considered. At last, we introduce the specific method to solve the stiff ODE. After the introduction of those methods, several experiments have been made to verify the effectiveness and robustness of them. Based on results of the experiments, it fair to say that those methods are very powerful and accurate.
+
+\nocite{burden:2011na}
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+% \appendix
+
+% \section{}
+% \label{}
+
+%% References
+%%
+%% Following citation commands can be used in the body text:
+%% Usage of \cite is as follows:
+%%   \cite{key}          ==>>  [#]
+%%   \cite[chap. 2]{key} ==>>  [#, chap. 2]
+%%   \citet{key}         ==>>  Author [#]
+
+%% References with bibTeX database:
+
+\bibliographystyle{model1-num-names}
+\bibliography{ref}
+
+%% Authors are advised to submit their bibtex database files. They are
+%% requested to list a bibtex style file in the manuscript if they do
+%% not want to use model1-num-names.bst.
+
+%% References without bibTeX database:
+
+% \begin{thebibliography}{00}
+
+%% \bibitem must have the following form:
+%%   \bibitem{key}...
+%%
+
+% \bibitem{}
+
+% \end{thebibliography}
+
+
+\end{document}
