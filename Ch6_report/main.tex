@@ -1,0 +1,677 @@
+\documentclass[preprint,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+%% The graphicx package provides the includegraphics command.
+\usepackage{graphicx}
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+% \usepackage{lineno}
+
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{breqn}
+
+%% add pseudo codes
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+\floatname{algorithm}{Algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{INPUT:}}
+\renewcommand{\algorithmicensure}{\textbf{OUTPUT:}}
+
+%% add python codes
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%
+%% \biboptions{comma,round}
+
+% \biboptions{}
+
+\journal{}
+
+\begin{document}
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+\title{Direct Methods for Solving Linear Systems}
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+\author{Zhangqian Xie}
+
+\address{No.201600020098, Shandong University}
+
+\begin{abstract}
+%% Text of abstract
+The purpose of this article is to solve the linear systems and get their solutions faster and more accurately. Taken the accuracy and popularity into consideration, there are three methods discussed in the article, namely Gaussian Elimination, Cholesky's method and the specific matrix called Band Matrix. Then several experiments have been made to verify the effectiveness of those numerical methods. Based on results of those experiments, it can be observed that those methods are effective and useful.
+\end{abstract}
+
+\begin{keyword}
+$LU$ factorization \sep $LL^T$ factorization \sep Band Matrix
+%% keywords here, in the form: keyword \sep keyword
+
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+
+\end{keyword}
+
+\end{frontmatter}
+
+%%
+%% Start line numbering here if you want
+%%
+% \linenumbers
+
+%% main text
+\section{Introduction}
+\label{S:1}
+
+In Section \ref{S:1}, the background and some history  have been recalled. In Section \ref{S:2}, several methods of solving linear systems are to be introduced and their formulas are to be interpreted. In Section \ref{S:3}, several experiments are designed to verify the efficiency of those methods and their error is also listed. In Section \ref{S:4}, the conclusion of the article has been made.
+
+\section{Methodologies}
+\label{S:2}
+
+There are several numerical methods to solving the linear systems, which have been introduced in \cite{burden:2001na}. In this section, three methods are to be illustrated, due to their popularity and accuracy.
+
+\begin{itemize}
+\item $LU$ factorization
+\item $LL^T$ factorization
+\item Band matrix
+\end{itemize}
+
+All these methods are based on matrix algebra and the matrix factorization.
+
+\subsection{$LU$ factorization}
+\label{SS:2.1}
+
+To solve the linear systems of equations $A\mathbf{x}=\mathbf{b}$, if $A$ has been factored into the triangular form $A = LU$, where $L$ is lower triangular and $U$ is upper triangular, with the form
+
+\small
+\[
+L=\left(%
+\begin{array}{ccccc}
+  1& 0 & 0& \cdots & 0 \\
+  l_{21} & 1 & 0 & \cdots& 0 \\
+  l_{31} & l_{32} & 1 & \cdots & 0 \\
+  \vdots & \vdots & \vdots &\ddots & \vdots \\
+  l_{n1} & l_{n2} & l_{n3} & \cdots & 1 \\
+\end{array}%
+\right),
+U=\left(%
+\begin{array}{ccccc}
+  u_{11} & u_{12} & u_{13}& \cdots & u_{1n} \\
+  0 & u_{22} & u_{23} & \cdots& u_{2n} \\
+  0 & 0 & u_{33} & \cdots & u_{3n} \\
+  \vdots & \vdots & \vdots &\ddots & \vdots \\
+  0 & 0 & 0 & \cdots & u_{nn} \\
+\end{array}%
+\right)
+\]
+
+Then the system can be written as $LU\mathbf{x}=\mathbf{b}$,  and we can solve for $\mathbf{x}$ more easily by using a two-step process:
+
+\begin{itemize}
+\item First we let $\mathbf{y} = U\mathbf{x} $ and solve the system $L\mathbf{y} = \mathbf{b}$ for $\mathbf{y}$, which requires only $O(n^2)$ operations.
+\item Once $\mathbf{y}$ is known, the same as the backward substitution method can be used to solve linear system $U\mathbf{x} = \mathbf{y} $ to determine $\mathbf{x}$ with only an additional $O(n^2)$ operations.
+\end{itemize}
+
+Determining the specific matrices $L$ and $U$ requires $O(\frac{n^3}{3})$ operations. Once the factorization is determined, a system involving the matrix $A$ and any vector $\mathbf{b}$ can be solved in this simplified manner.
+
+\subsection{$LL^T$ factorization}
+\label{SS:2.2}
+
+For a $n \times n$ symmetric positive definite matrix $A$ with the form
+
+\[
+A=\left(
+    \begin{array}{ccccc}
+      a_{11} & a_{12} & a_{13} & \cdots & a_{1n} \\
+      a_{12} & a_{22} & a_{23} & \cdots & a_{2n} \\
+      a_{13} & a_{23} & a_{33} & \cdots & a_{3n} \\
+      \vdots & \vdots & \vdots &  & \vdots \\
+      a_{1n} & a_{2n} & a_{3n} & \cdots & a_{nn} \\
+    \end{array}
+  \right)
+\]
+
+where $A^T=A$.
+
+To factor the  positive definite matrix $A$ into the form $LL^T$, where $L$ is a lower triangular matrix with form as follows
+
+\[
+L=\left(%
+\begin{array}{ccccc}
+  l_{11} & 0 & 0& \cdots & 0 \\
+  l_{21} & l_{22} & 0 & \cdots& 0 \\
+  l_{31} & l_{32} & l_{33} & \cdots & 0 \\
+  \vdots & \vdots & \vdots &\ddots & \vdots \\
+  l_{n1} & l_{n2} & l_{n3} & \cdots & l_{nn} \\
+\end{array}%
+\right) ,
+\]
+
+The problem is to determine the elements $l_{ij},j=1,2,\cdots,i$, for each $i=1,2,\cdots,n$. Let us first view the relationship by the definition of equal matrices
+
+\begin{eqnarray*}
+A&=&\left(
+    \begin{array}{ccccc}
+      a_{11} & a_{12} & a_{13} & \cdots & a_{1n} \\
+      a_{12} & a_{22} & a_{23} & \cdots & a_{2n} \\
+      a_{13} & a_{23} & a_{33} & \cdots & a_{3n} \\
+      \vdots & \vdots & \vdots &  & \vdots \\
+      a_{1n} & a_{2n} & a_{3n} & \cdots & a_{nn} \\
+    \end{array}
+  \right)=LL^T\\
+  &=&\left(%
+\begin{array}{ccccc}
+  l_{11} & 0 & 0& \cdots & 0 \\
+  l_{21} & l_{22} & 0 & \cdots& 0 \\
+  l_{31} & l_{32} & l_{33} & \cdots & 0 \\
+  \vdots & \vdots & \vdots &\ddots & \vdots \\
+  l_{n1} & l_{n2} & l_{n3} & \cdots & l_{nn} \\
+\end{array}%
+\right)
+\left(%
+\begin{array}{ccccc}
+  l_{11} & l_{21} & l_{31}& \cdots & l_{n1} \\
+  0 & l_{22} & l_{32} & \cdots& l_{n2} \\
+  0 & 0 & l_{33} & \cdots & l_{n3} \\
+  \vdots & \vdots & \vdots &\ddots & \vdots \\
+  0 & 0 & 0 & \cdots & l_{nn} \\
+\end{array}%
+\right)
+\end{eqnarray*}
+
+First, determining $l_{11}$ by
+
+\[
+l_{11}=\sqrt{a_{11}}
+\]
+
+and $l_{i1}$, $i=2,3,\cdots,n$, by
+
+\[
+l_{i1}l_{11}=a_{i1}, \text{ thus }
+l_{i1}=\frac{a_{1i}}{l_{11}}.
+\]
+
+Second, determine $l_{22}$ by
+
+\[
+l_{21}^2+l_{22}^2=a_{22},
+\]
+
+thus
+
+\[
+l_{22}=[a_{22}-l_{21}^2]^{1/2}.
+\]
+
+So we can easily get the second column $l_{i2}$, $i=3,4,\cdots,n$ of matrix $L$
+
+\[
+l_{21}l_{i1}+l_{22}l_{i2}=a_{2i},\quad i=3,4,\cdots,n.
+\]
+
+thus we can get
+
+\[
+l_{i2}=\frac{a_{2i}-l_{21}l_{i1}}{l_{22}},i=3,4,\cdots,n.
+\]
+
+With similar idea, we can derive for any $k, k=2,3,\cdots,n$,
+
+\[
+l_{kk}=[a_{kk}-\sum_{j=1}^{k-1}l_{kj}^2]^{1/2},
+\]
+
+and for $i=k+1,k+2,\cdots,n$,
+
+\[
+l_{ik}=\frac{a_{ki}-\sum\limits_{j=1}^{k-1}{l_{kj}l_{ij}}}{l_{kk}}.
+\]
+
+\subsection{Band Matrix}
+\label{SS:2.3}
+
+An $n \times n$ matrix  $A$ is called a \textbf{band matrix} if integers $p$ and $q$, with $1 < p, q < n$, exist having the property that $a_{ij} = 0$ whenever $i + p\le j$ or $j + q \le i$. The bandwidth of a band matrix is defined as $w = p + q - 1$.
+
+\[
+A=\begin{bmatrix}
+  a_{11} & \cdots & a_{1p} & 0 & \cdots & 0 \\
+  \vdots & \ddots &  & \ddots & \ddots & \vdots \\
+  a_{q1} & & \ddots &  & \ddots & 0\\
+  0 & \ddots &  & \ddots &  &  a_{n-p+1,n}\\
+  \vdots & \ddots &\ddots  &  & \ddots & \vdots \\
+  0 & \cdots & 0 & a_{n,n-q+1} & \cdots & a_{nn} \\
+\end{bmatrix}
+\]
+
+Two special cases of band matrices that occur often in practice have $p = q = 2$ and $p = q = 4$. The matrix of bandwidth $3$, occurring when $p = q = 2$, are called \textbf{tridiagonal}, since they have the form
+
+\[
+A= \begin{bmatrix}
+  a_{11} & a_{12} & 0 & \cdots & \cdots &\cdots& 0 \\
+  a_{21} & a_{22} & a_{23} & \ddots & & & \vdots \\
+  0 & a_{32} & a_{33} & a_{34} & \ddots & \vdots \\
+\vdots & \ddots & \ddots &\ddots  & \ddots &\ddots&  \vdots\\
+  \vdots & \ddots & \ddots &\ddots  & \ddots&\ddots &  0\\
+  \vdots & & & \ddots & \ddots & \ddots & a_{n-1.n} \\
+  0 & \cdots &\cdots &\cdots & 0 & a_{n.n-1} & a_{nn} \\
+\end{bmatrix}
+\]
+
+The case of $p=q=4$ will be used for the solution of boundary-value problems. There are two similar factorizations for tridiagonal matrix.
+
+\noindent $\bullet$ Doolittle Factorization
+\[L=
+\begin{bmatrix}
+ 1& 0 &\cdots   & \cdots & \cdots & 0 \\
+  l_{21} & 1 & \ddots &  &  & \vdots \\
+  0 & l_{32} & 1 & \ddots &  & \vdots \\
+  \vdots & \ddots & \ddots & \ddots & \ddots &  \vdots\\
+  \vdots &  & \ddots & \ddots &  \ddots& 0 \\
+  0 & \cdots & \cdots & 0 & l_{n,n-1} & 1 \\
+\end{bmatrix},
+\]
+\[U=
+\begin{bmatrix}
+  u_{11} & u_{12} & 0 & \cdots & \cdots & 0 \\
+  0 & u_{22} & u_{23} & \ddots &  & \vdots \\
+  \vdots & 0 & u_{33} & u_{34} & \ddots & \vdots \\
+ \vdots &  & \ddots & \ddots & \ddots & 0\\
+  \vdots &  &  & \ddots & \ddots &u_{n-1,n}  \\
+ 0 & \cdots & \cdots & \cdots & 0 & u_{nn} \\
+\end{bmatrix}
+\]
+
+\noindent $\bullet$ Crout Factorization
+\[L=
+\begin{bmatrix}
+ l_{11}& 0 &\cdots   & \cdots & \cdots & 0 \\
+  l_{21} & l_{22} & \ddots &  &  & \vdots \\
+  0 & l_{32} & l_{33} & \ddots &  & \vdots \\
+  \vdots & \ddots & \ddots & \ddots & \ddots &  \vdots\\
+  \vdots &  & \ddots & \ddots &  \ddots& 0 \\
+  0 & \cdots & \cdots & 0 & l_{n,n-1} & l_{nn} \\
+\end{bmatrix},
+\]
+\[U=
+\begin{bmatrix}
+  1 & u_{12} & 0 & \cdots & \cdots & 0 \\
+  0 & 1 & u_{23} & \ddots &  & \vdots \\
+  \vdots & 0 & 1 & u_{34} & \ddots & \vdots \\
+ \vdots &  & \ddots & \ddots & \ddots & 0\\
+  \vdots &  &  & \ddots & \ddots &u_{n-1,n}  \\
+ 0 & \cdots & \cdots & \cdots & 0 & 1 \\
+\end{bmatrix}
+\]
+
+Both of them have $3n-2$ nonzero entries to be determined.
+
+Take the Crout Factorization for example. The multiplication involved with $A=LU$ gives
+
+\begin{eqnarray*}
+  l_{11} &=& a_{11}, \\
+  l_{i,i-1} &=& a_{i,i-1}, \text{ for each } i=2,3,\cdots, n\\
+  l_{i,i-1}u_{i-1,i}+l_{ii} &=& a_{ii}, \text{ for each } i=2,3,\cdots, n\\
+  l_{ii}u_{i,i+1}&=&a_{i,i+1},\text{ for each } i=1,2,\cdots, n-1
+\end{eqnarray*}
+
+This algorithm requires only $5n-4$ multiplications/divisions and $3n-3$ additions/ subtractions. Consequently, it has considerable computational advantage over the methods that do not consider the tridiagonality of the matrix.
+
+\section{Experiments}
+\label{S:3}
+
+In this section, there are several experiments made to verify efficiency and robustness of three methods to get the solution of linear system, which have been introduced in Section \ref{S:2}. To obtain the results of experiments, some programs are written in Python and the following codes are run initially to import some useful packages and to set used settings.
+
+\begin{lstlisting}
+import numpy as np
+\end{lstlisting}
+
+\subsection{$LU$ Factorization}
+\label{SS:3.1}
+
+An example is shown below to test the effectiveness of $LU$ factorization. The equation to be solved is going to be solved. $A$ is shown in (\ref{eq:llA}) and $b$ is shown in (\ref{eq:llb}).
+
+\begin{equation}
+\label{eq:llA}
+  A = 
+  \begin{bmatrix}
+    1 & 1 & 0 & 3 \\
+    2 & 1 & -1 & 1 \\
+    3 & -1 & -1 & 2 \\
+    -1 & 2 & 3 & -1
+  \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\label{eq:llb}
+  b = [8,\,7,\,14,\,-7]^T
+\end{equation}
+
+The results are $x_1 = 3, x_2 = -1, x_3 = 0, x_4 = 2$. And $L$ and $U$ are solved by the algorithm.
+
+\begin{equation}
+  L = 
+  \begin{bmatrix}
+    1.0 & 0.0 & 0.0 & 0.0 \\
+    2.0 & -1.0 & 0.0 & 0.0 \\
+    3.0 & -4.0 & 3.0 & 0.0 \\
+    -1.0 & 3.0 & 0.0 & -13.0
+  \end{bmatrix},
+\end{equation}
+
+\begin{equation}
+  U = 
+  \begin{bmatrix}
+    1.0 & 1.0 & 0.0 & 3.0 \\
+    0.0 & 1.0 & 1.0 & 5.0 \\
+    0.0 & 0.0 & 1.0 & 4.33 \\
+    0.0 & 0.0 & 0.0 & 1.0
+  \end{bmatrix}.
+\end{equation}
+
+The program of the experiment is also shown below.
+\begin{lstlisting}
+class linearSys:
+    def __init__(self, A, b):
+        self.A = A
+        self.b = b
+        self.n = A.shape[0]
+        self.L = np.eye(self.n)
+        self.U = np.eye(self.n)
+        self.x = np.zeros([self.n, 1])
+        self.y = np.zeros([self.n, 1])
+  
+    def LU_Decompose(self):
+        if self.A[0, 0] != 0:
+            self.L[0, 0] = self.A[0, 0]
+            self.U[0, 1:] = self.A[0, 1:] / self.L[0, 0]
+            self.L[1:, 0] = self.A[1:, 0] / self.U[0, 0]
+            for i in range(1, self.n - 1):
+                self.L[i, i] = self.A[i, i] - np.dot(self.L[i, 0:i], self.U[0:i, i])
+                if self.L[i, i] != 0:
+                    self.U[i, i+1:] = (self.A[i, i+1:] - np.dot(self.L[i, 0:i], self.U[0:i, i+1:])) / self.L[i, i]
+                    self.L[i+1:, i] = (self.A[i+1:, i] - np.dot(self.L[i+1:, 0:i], self.U[0:i, i])) / self.U[i, i]
+                else:
+                    return 'Factorization impossible at l{0}{0}'.format(i+1)
+          
+            self.L[-1, -1] = self.A[-1, -1] - np.dot(self.L[-1, 0:-1], self.U[0:-1, -1])
+            if self.L[-1, -1] == 0:
+                print('A is singular')
+            
+            self.y[0] = self.b[0] / self.L[0, 0]
+            for i in range(1, self.n):
+                self.y[i, 0] = (self.b[i] - np.dot(self.L[i, 0:i], self.y[0:i, 0])) / self.L[i, i]
+            
+            self.x[-1] = self.y[-1] / self.U[-1, -1]
+            for i in range(self.n - 2, -1, -1):
+                self.x[i, 0] = (self.y[i, 0] - np.dot(self.U[i, i+1:], self.x[i+1:, 0])) / self.U[i, i]
+            
+            return self.x, self.L, self.U
+        else:
+            return 'Factorization impossible at a11'
+\end{lstlisting}
+
+\subsection{Cholesky's Factorization}
+\label{SS:3.2}
+
+An example is shown below to test the effectiveness of $LL^T$ factorization. The equation to be solved is going to be solved. $A$ is shown in (\ref{eq:lltA}) and $b$ is shown in (\ref{eq:lltb}).
+
+\begin{equation}
+\label{eq:lltA}
+  A = 
+  \begin{bmatrix}
+    4 & 0 & 2 & 1 \\
+    0 & 3 & -1 & 1 \\
+    2 & -1 & 6 & 3 \\
+    1 & 1 & 3 & 8
+  \end{bmatrix},
+\end{equation}
+
+\begin{equation}
+\label{eq:lltb}
+    b = [0.3, 6.8, -9.6, 10.9]^T.
+  \end{equation}
+
+And the result is $x_1 = 1, x_2 = 0.5, x_3 = -3, x_4 = 2.3$. We also compare the time of it and $LU$ factorization. The $LU$ factorization took 0.00078 seconds and the $LL^T$ factorization took 0.0009 seconds. The programs used in the experiment are also shown below.
+
+\begin{lstlisting}
+...
+    def LLt_Decompose(self):
+        self.L[0, 0] = np.sqrt(self.A[0, 0])
+        self.L[1:, 0] = self.A[1:, 0] / self.L[0, 0]
+        for i in range(1, self.n - 1):
+            self.L[i, i] = np.sqrt(self.A[i, i] - np.sum(self.L[i, 0:i] ** 2))
+            self.L[i+1:, i] = (self.A[i+1:, i] - np.sum(self.L[i+1:, 0:i] * self.L[i, 0:i], axis=1)) / self.L[i, i]
+        self.L[-1, -1] = np.sqrt(self.A[-1, -1] - np.sum(self.L[-1, 0:-1] ** 2))
+        self.y[0] = self.b[0] / self.L[0, 0]
+        for i in range(1, self.n):
+            self.y[i, 0] = (self.b[i] - np.dot(self.L[i, 0:i], self.y[0:i, 0])) / self.L[i, i]
+        
+        self.x[-1] = self.y[-1] / self.L[-1, -1]
+        for i in range(self.n - 2, -1, -1):
+            self.x[i, 0] = (self.y[i, 0] - np.dot(self.L[i+1:, i], self.x[i+1:, 0])) / self.L[i, i]
+        
+        return self.x
+
+
+from report5_codes import linearSys, array2latex
+from time import perf_counter
+import numpy as np
+
+A = np.array([
+    [4, 0, 2, 1],
+    [0, 3, -1, 1],
+    [2, -1, 6, 3],
+    [1, 1, 3, 8]
+])
+x_actual = np.array([1, .5, -3, 2.3]).T
+b = A.dot(x_actual)
+
+print(array2latex(A))
+print(x_actual)
+print(b)
+
+t0 = perf_counter()
+testClass1 = linearSys(A, b)
+print(testClass1.LU_Decompose()[0])
+print('LU')
+print('Spend time: %.5f seconds' % (perf_counter() - t0))
+
+t0 = perf_counter()
+testClass2 = linearSys(A, b)
+print(testClass2.LLt_Decompose())
+print('LLt')
+print('Spend time: %.5f seconds' % (perf_counter() - t0))
+\end{lstlisting}
+
+\subsection{Band Matrix}
+\label{SS:3.3}
+
+The four equations are designed to verify the robustness of the method specific to the band matrix. And the results are shown in Table \ref{tab:bw}.The programs of the experiment are also shown below.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{c|cccc}
+    \textbf{Bandwidth} & 9 & 7 & 5 & 3 \\
+    \hline
+    \textbf{Time(sec)} & 0.00148 & 0.00077 & 0.00073 & 0.00059
+  \end{tabular}
+  \caption{Comparision bewteen Different Bandwidths}
+  \label{tab:bw}
+\end{table}
+
+\begin{lstlisting}
+from report5_codes import linearSys
+from time import perf_counter
+import numpy as np
+
+
+A1 = np.array([
+    [2, 3, -1, .5, 1],
+    [3, 2, 4, -3, 2],
+    [-1, 4, 2, 1, -.5],
+    [.5, -3, 1, 2, 1],
+    [1, 2, -.5, 1, 2]
+])
+A2 = np.array([
+    [2, 3, -1, .5, 0],
+    [3, 2, 4, -3, 2],
+    [-1, 4, 2, 1, -.5],
+    [.5, -3, 1, 2, 1],
+    [0, 2, -.5, 1, 2]
+])
+A3 = np.array([
+    [2, 3, -1, 0, 0],
+    [3, 2, 4, -3, 0],
+    [-1, 4, 2, 1, -.5],
+    [0, -3, 1, 2, 1],
+    [0, 0, -.5, 1, 2]
+])
+A4 = np.array([
+    [2, 3, 0, 0, 0],
+    [3, 2, 4, 0, 0],
+    [0, 4, 2, 1, 0],
+    [0, 0, 1, 2, 1],
+    [0, 0, 0, 1, 2]
+])
+
+x_actual = np.array([1., 1., 1., 1., 1.]).T
+AList = [A1, A2, A3, A4]
+
+for A in AList:
+    b = A.dot(x_actual)
+    t0 = perf_counter()
+    testClass = linearSys(A, b)
+    x, _, _ = testClass.LU_Decompose()
+    print(A)
+    print('Spend time: %.5f seconds' % (perf_counter() - t0))
+\end{lstlisting}
+
+\section{Conclusion}
+\label{S:4}
+
+In this article, we have considered methods to approximate the solution to the linear system. We have began with the $LU$ factorization based on Gaussian Elimination. $LL^T$ factorization has also been discussed. At last, we introduce the specific matrix called Band Matrix with many zeros. After the introduction of those methods, several experiments have been made to verify the effectiveness and robustness of them. Based on results of the experiments, it fair to say that those methods are very powerful and accurate.
+
+\nocite{burden:2011na}
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+% \appendix
+
+% \section{}
+% \label{}
+
+%% References
+%%
+%% Following citation commands can be used in the body text:
+%% Usage of \cite is as follows:
+%%   \cite{key}          ==>>  [#]
+%%   \cite[chap. 2]{key} ==>>  [#, chap. 2]
+%%   \citet{key}         ==>>  Author [#]
+
+%% References with bibTeX database:
+
+\bibliographystyle{model1-num-names}
+\bibliography{ref}
+
+%% Authors are advised to submit their bibtex database files. They are
+%% requested to list a bibtex style file in the manuscript if they do
+%% not want to use model1-num-names.bst.
+
+%% References without bibTeX database:
+
+% \begin{thebibliography}{00}
+
+%% \bibitem must have the following form:
+%%   \bibitem{key}...
+%%
+
+% \bibitem{}
+
+% \end{thebibliography}
+
+\end{document}
