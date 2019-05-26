@@ -1,0 +1,620 @@
+\documentclass[preprint,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+%% The graphicx package provides the includegraphics command.
+\usepackage{graphicx}
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+% \usepackage{lineno}
+
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{breqn}
+
+%% add pseudo codes
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+\floatname{algorithm}{Algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{INPUT:}}
+\renewcommand{\algorithmicensure}{\textbf{OUTPUT:}}
+
+%% add python codes
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%
+%% \biboptions{comma,round}
+
+% \biboptions{}
+
+\journal{}
+
+\begin{document}
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+\title{Iterative Techniques in Matrix Algebra}
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+\author{Zhangqian Xie}
+
+\address{No.201600020098, Shandong University}
+
+\begin{abstract}
+%% Text of abstract
+The purpose of this article is to study iterative techniques to approximate the solution of linear systems. Taken the accuracy and popularity into consideration, there are three methods discussed in the article, namely Jacobi method, Gauss-Seidel method and the SOR iterative method. Then several experiments have been made to verify the effectiveness of those numerical methods. Based on results of those experiments, it can be observed that those methods are effective and useful.
+\end{abstract}
+
+\begin{keyword}
+Jacobi Method \sep Gauss-Seidel Method \sep SOR Method
+%% keywords here, in the form: keyword \sep keyword
+
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+
+\end{keyword}
+
+\end{frontmatter}
+
+%%
+%% Start line numbering here if you want
+%%
+% \linenumbers
+
+%% main text
+\section{Introduction}
+\label{S:1}
+
+In Section \ref{S:1}, the background and some history  have been recalled. In Section \ref{S:2}, several methods of solving linear systems iteratively are to be introduced and their formulas are to be interpreted. In Section \ref{S:3}, several experiments are designed to verify the efficiency of those methods and their error is also listed. In Section \ref{S:4}, the conclusion of the article has been made.
+
+\section{Methodologies}
+\label{S:2}
+
+There are several numerical methods to obtain the solutions of linear systems, which have been introduced in \cite{burden:2001na}. In this section, three methods are to be illustrated, due to their popularity and accuracy.
+
+\begin{itemize}
+\item Jacobi
+\item Gauss-Seidel
+\item SOR
+\end{itemize}
+
+All these methods are iterative techniques to solve the linear systems.
+
+\subsection{Jacobi Method}
+\label{SS:2.1}
+
+To solve the linear system of equation in the form
+
+\[
+\left \{%
+\begin{array}{ll}
+a_{11}x_1+a_{12}x_2+\cdots+a_{1i}x_i+\cdots+a_{1n}x_n=b_1\\
+a_{21}x_1+a_{22}x_2+\cdots+a_{2i}x_i+\cdots+a_{2n}x_n=b_2\\
+\vdots \qquad \vdots \qquad \qquad  \vdots \qquad \qquad \qquad  \vdots \qquad  \vdots\\
+a_{i1}x_1+a_{i2}x_2+\cdots+a_{ii}x_i+\cdots+a_{in}x_n=b_i\\
+\vdots \qquad \vdots \qquad \qquad  \vdots \qquad \qquad \qquad  \vdots \qquad  \vdots\\
+a_{n1}x_1+a_{n2}x_2+\cdots+a_{ni}x_i+\cdots+a_{nn}x_n=b_n\\
+\end{array}
+\right.
+\]
+
+If $a_{ii}\ne 0$, for  each $i=1,2,\cdots,n$, we can rewrite above equation  as the follows
+
+$$
+\left \{%
+\begin{array}{l}
+x_1=\dfrac{1}{a_{11}}[b_1 \qquad-a_{12}x_2-\cdots-a_{1i}x_i-\cdots-a_{1n}x_n]\\[5pt]
+x_2=\dfrac{1}{a_{22}}[b_2-a_{21}x_1 \qquad -a_{23}x_3-\cdots-a_{2i}x_i-\cdots-a_{2n}x_n]\\
+\vdots \\
+x_i=\dfrac{1}{a_{ii}}[b_i-a_{i1}x_1-\cdots-a_{i,i-1}x_{i-1} \qquad-a_{i,i+1}x_{i+1}-\cdots-a_{in}x_n]\\
+\vdots \\
+x_n=\dfrac{1}{a_{nn}}[b_n-a_{n1}x_1-a_{n2}x_2-\cdots-a_{ni}x_i-\cdots-a_{n,n-1}x_{n-1}]\\
+\end{array}
+\right.
+$$
+
+Jacobi Iterative Method consists of solving the $i$th equation in $A\mathbf{x} = \mathbf{b}$ for $x_i$ to obtain (provided $a_{ii}\ne 0$)
+
+\[
+x_i=\sum_{j=1,j\ne i}^n
+\biggl(-\frac{a_{ij}x_j}{a_{ii}}\biggr)+\frac{b_i}{a_{ii}},\ \
+\text{for} \ \ i=1,2,\cdots,n
+\]
+
+and generating each $x_i^{(k)}$ from components of $\mathbf{x}^{(k-1)}$ for $k\ge 1$ by
+
+\begin{equation*}
+x_i^{(k)}= \frac{\sum\limits_{j=1,j\ne
+i}^n(-a_{ij}x_j^{(k-1)})+b_i}{a_{ii}},
+\end{equation*}
+
+for $i=1,2,\cdots,n.$ 
+
+The method is written in the form $\mathbf{x}^{(k)} =T\mathbf{x}^{(k-1)} + \mathbf{c}$ by splitting $A$ into its diagonal and off-diagonal parts. To see this, let $D$ be the diagonal matrix whose diagonal is the same as $A$, $- L$ be the strictly lower-triangular part of $A$, $- U$ be the strictly upper-triangular part of $A$. With this notation, $A$ is split into
+
+$$
+\begin{array}{l}
+A =\begin{bmatrix}
+    a_{11} & a_{12} & \cdots & a_{1n} \\
+    a_{21} & a_{22} & \cdots & a_{2n} \\
+    \vdots & \vdots &  & \vdots \\
+    a_{n1} & a_{n2} & \cdots & a_{nn} \\
+  \end{bmatrix} =D-L-U\\
+=\begin{bmatrix}
+    a_{11} &0 & \cdots & 0 \\
+    0 & a_{22} & \ddots & \vdots \\
+    \vdots & \ddots & \ddots & 0 \\
+   0 & \cdots & 0 & a_{nn} \\
+  \end{bmatrix}-
+  \begin{bmatrix}
+    0 & 0 & \cdots & 0 \\
+    -a_{21} & 0 & \ddots & \vdots \\
+    \vdots & \ddots & \ddots & 0\\
+    -a_{n1} &\cdots &  -a_{n,n-1} & 0 \\
+  \end{bmatrix}
+  -\begin{bmatrix}
+    0 & -a_{12} & \cdots & -a_{1n} \\
+    0 & 0 & \ddots &\vdots \\
+    \vdots & \ddots & \ddots &  -a_{n-1,n} \\
+    0 & \cdots & 0& 0 \\
+  \end{bmatrix}
+\end{array}
+$$
+
+The equation $A\mathbf{x} = \mathbf{b}$, or $(D - L - U)\mathbf{x} = \mathbf{b}$, is then transformed into \[D\mathbf{x} = (L + U)\mathbf{x} + \mathbf{b}\] and if $D^{-1}$ exists, then
+
+$$
+\mathbf{x} = D^{-1}(L + U)\mathbf{x} + D^{-1}\mathbf{b}.
+$$
+
+This results in the matrix form of the Jacobi iterative technique:
+
+\begin{equation*}
+\mathbf{x}^{(k)} = D^{-1}(L + U)\mathbf{x}^{(k-1)} +
+D^{-1}\mathbf{b},\ k = 1, 2,\cdots.
+\end{equation*}
+
+Introducing the notation $T_j = D^{-1}(L + U)$ and $\mathbf{c}_j = D^{-1}\mathbf{b}$, the Jacobi technique has the form
+
+\begin{equation*}
+    \mathbf{x}^{(k)} = T_j\mathbf{x}^{(k-1)} + \mathbf{c}_j.
+\end{equation*}
+
+The equation $A\mathbf{x} = \mathbf{b}$, or $(D - L - U)\mathbf{x} = \mathbf{b}$, is then transformed into \[D\mathbf{x} = (L + U)\mathbf{x} + \mathbf{b}\] and if $D^{-1}$ exists, then
+
+$$
+\mathbf{x} = D^{-1}(L + U)\mathbf{x} + D^{-1}\mathbf{b}.
+$$
+
+This results in the matrix form of the Jacobi iterative technique:
+
+\begin{equation*}
+\mathbf{x}^{(k)} = D^{-1}(L + U)\mathbf{x}^{(k-1)} +
+D^{-1}\mathbf{b},\ k = 1, 2,\cdots.
+\end{equation*}
+
+Introducing the notation $T_j = D^{-1}(L + U)$ and $\mathbf{c}_j = D^{-1}\mathbf{b}$, the Jacobi technique has the form
+
+\begin{equation*}
+    \mathbf{x}^{(k)} = T_j\mathbf{x}^{(k-1)} + \mathbf{c}_j.
+\end{equation*}
+
+\subsection{Gauss-Seidel Method}
+\label{SS:2.2}
+
+A possible improvement can be seen that, to compute $x_i^{(k)}$, the components of $\mathbf{x}^{(k-1)}$ are used. Since, for $i> 1$, $x_1^{(k)},x_2^{(k)},\cdots,x_{i-1}^{(k)}$ have already been computed and are likely to be better approximations to the actual solutions $x_1,x_2,\cdots,x_{i-1}$ than $x_1^{(k-1)},x_2^{(k-1)},\cdots,x_{i-1}^{(k-1)}$.
+
+It seems more reasonable to compute $x_i^{(k)}$ using these most recently calculated values; that is,
+
+\begin{equation*}
+    x_i^{(k)}=\frac{-\sum\limits_{j=1}^{i-1}(a_{ij}x_j^{(k)})
+    -\sum\limits_{j=i+1}^n(a_{ij}x_j^{(k-1)})+b_i}{a_{ii}},
+\end{equation*}
+
+for each $i = 1, 2,\cdots, n$. This modification is called the \textbf{Gauss-Seidel iterative technique}.
+
+To write the Gauss-Seidel method in matrix form, we rewrite these formulas to give
+
+\begin{eqnarray*}
+&&a_{i1}x_1^{(k)}+a_{i2}x_2^{(k)}+\cdots+a_{ii}x_i^{(k)}\\
+&=&-a_{i,i+1}x_{i+1}^{(k-1)}-a_{i,i+2}x_{i+2}^{(k-1)}-\cdots-a_{i,n}x_n^{(k-1)}+b_i,
+\end{eqnarray*}
+
+for each $i = 1, 2,\cdots, n$.
+
+Writing all $n$ equations gives
+
+$$
+  \begin{array}{cccccccccc}
+    a_{11}x_1^{(k)} &                  &           &                  & = & -a_{12}x_2^{(k-1)} & -a_{13}x_3^{(k-1)} &\cdots & -a_{1n}x_n^{(k-1)} & +b_1, \\[5pt]
+    a_{21}x_1^{(k)} & +a_{22}x_2^{(k)} &           &                  & = &                    & -a_{23}x_3^{(k-1)} &\cdots & -a_{2n}x_n^{(k-1)} & +b_2 ,\\
+    \vdots          &                  &           &                  &   &                    &                    &          &                     & \\
+    a_{n1}x_1^{(k)} & +a_{n2}x_2^{(k)} &  \cdots   & +a_{nn}x_n^{(k)} & = &                    &                    &          &                     & b_n;\\
+  \end{array}
+$$
+
+It follows that the matrix form of the Gauss-Seidel method is
+
+\[
+(D-L)\mathbf{x}^{(k)}=U\mathbf{x}^{(k-1)}+\mathbf{b}
+\]
+
+or
+
+\[
+x^{(k)}=(D-L)^{-1}U\mathbf{x}^{(k-1)}+(D-L)^{-1}\mathbf{b},
+\quad k=1,2,\cdots.
+\]
+
+Letting $T_g = (D - L)^{-1} U$ and $\mathbf{c}_g = (D - L)^{-1}\mathbf{b}$, the Gauss-Seidel technique has the form
+
+\[
+\mathbf{x}^{(k)}=T_g\mathbf{x}^{(k-1)}+\mathbf{c}_g.
+\]
+
+For the lower-triangular matrix $D - L$ to be nonsingular, it is necessary and sufficient that $a_{ii}\ne 0$ for each $i = 1, 2,\cdots, n$.
+
+\subsection{SOR Method}
+\label{SS:2.3}
+
+Suppose $\mathbf{\tilde{x}} \in \mathbb{R}^n$ is an approximation to the solution of the linear system defined by $A\mathbf{x} = \mathbf{b}.$ The \textbf{residual vector} for $\mathbf{\tilde{x}}$ with respect to this system is $\mathbf{r} = \mathbf{b} - A\mathbf{\tilde{x}}.$
+
+In procedures such as the Jacobi or Gauss-Seidel methods, a residual vector is associated with each calculation of an approximation component to the solution vector. The object of the method is to generate a sequence of approximations that will cause the associated residual vectors to converge rapidly to zero.
+
+Suppose we let
+
+\[
+\mathbf{r}_i^{(k)} = (r^{(k)}_{1i},r^{(k)}_{2i},\cdots,r^{(k)}_{ni})^T
+\]
+
+denote the residual vector for the Gauss-Seidel method corresponding to the approximate solution vector $\mathbf{x}_i^{(k)}$ defined by
+
+\[
+\mathbf{x}_{i}^{(k)} =
+(x^{(k)}_{1},x^{(k)}_{2},\cdots,x_{i-1}^{(k)},x_i^{(k-1)},\cdots,x^{(k-1)}_{n})^T.
+\]
+
+The $m$th component of $\mathbf{r}^{(k)}_i$ is
+
+\begin{equation*}
+    r_{mi}^{(k)}=b_m-\sum_{j=1}^{i-1}a_{mj}x_j^{(k)}-\sum_{j=i}^n
+    a_{mj}x_j^{(k-1)},
+\end{equation*}
+
+or, equivalently,
+
+\begin{equation*}
+    r_{mi}^{(k)}=b_m-\sum_{j=1}^{i-1}a_{mj}x_j^{(k)}-\sum_{j=i+1}^n
+    a_{mj}x_j^{(k-1)}-a_{mi}x_i^{(k-1)},
+\end{equation*}
+
+for each $m =1,2,\cdots,n$.
+
+In particular, the $i$th component of $\mathbf{r}_{i}^{(k)}$ is
+
+\begin{equation*}
+    r_{ii}^{(k)}=b_i-\sum_{j=1}^{i-1}a_{ij}x_j^{(k)}-\sum_{j=i+1}^n
+    a_{ij}x_j^{(k-1)}-a_{ii}x_i^{(k-1)},
+\end{equation*}
+
+so
+
+\begin{equation*}
+    a_{ii}x_i^{(k-1)}+r_{ii}^{(k)}=b_i-\sum_{j=1}^{i-1}a_{ij}x_j^{(k)}
+    -\sum_{j=i+1}^n a_{ij}x_j^{(k-1)}.
+\end{equation*}
+
+Recall that in the Gauss-Seidel method, $x_i^{(k)}$ is chosen to be
+
+\[
+x_i^{(k)}=\frac{1}{a_{ii}}\biggl[b_i-\sum_{j=1}^{i-1}a_{ij}x_j^{(k)}
+-\sum_{j=i+1}^{n}a_{ij}x_j^{(k-1)}\biggr].
+\]
+
+so we have
+
+\begin{equation*}
+a_{ii}x_i^{(k-1)}+r_{ii}^{(k)}=a_{ii}x_i^{(k)}.
+\end{equation*}
+
+Consequently, the Gauss-Seidel method can be characterized as choosing $x_i^{(k)}$ to satisfy
+
+\begin{equation*}
+    x_i^{(k)}=x_i^{(k-1)}+\frac{r_{ii}^{(k)}}{a_{ii}}.
+\end{equation*}
+
+We can derive another connection between the residual vectors and the Gauss-Seidel technique.
+
+Consider the residual vector $\mathbf{r}_{i+1}^{(k)}$ associated with the vector
+
+\[\mathbf{x}_{i+1}^{(k)}=(x_1^{(k)},\cdots,x_i^{(k)},x_{i+1}^{(k-1)},
+\cdots,x_{n}^{(k-1)})^T,\]
+
+the $i$th component of $\mathbf{r}_{i+1}^{(k)}$ is
+
+\begin{eqnarray*}
+  r_{i,i+1}^{(k)} &=& b_i- \sum_{j=1}^{i}a_{ij}x_j^{(k)}-\sum_{j=i+1}^n
+    a_{ij}x_j^{(k-1)}\\
+   &=& b_i- \sum_{j=1}^{i-1}a_{ij}x_j^{(k)}-\sum_{j=i+1}^n
+    a_{ij}x_j^{(k-1)}-a_{ii}x_i^{(k)}.
+\end{eqnarray*}
+
+It can be implied that $r_{i,i+1}^{(k)} =0$. In a sense, then, the Gauss-Seidel technique is also characterized by choosing  $x_i^{(k)}$ in such a way that the $i$th component of $\mathbf{r}_{i+1}^{(k)}$ is zero.
+
+Reducing one coordinate of the residual vector to zero, however, is not generally the most efficient way to reduce the overall size of the vector $\mathbf{r}_{i+1}^{(k)}$. Instead, we need to choose $x_i^{(k)}$ so that $\|\mathbf{r}_{i+1}^{(k)}\|$ is small. Modifying the Gauss-Seidel procedure as given, to
+
+\begin{equation*}
+    x_i^{(k)}=x_i^{(k-1)}+\omega\frac{r_{ii}^{(k)}}{a_{ii}}.
+\end{equation*}
+
+for certain choices of positive $\omega$ reduces the norm of the
+residual vector and leads to significantly faster convergence. Methods involving in the former equation are called \textbf{relaxation methods.}
+
+For choices of $\omega$ with $0 < \omega < 1$, the procedures are called \textbf{under-relaxation methods} and can be used to obtain convergence of some systems that are not convergent by the Gauss-Seidel method.
+
+For choices of $\omega$ with $1 <\omega$, the procedures are called \textbf{over-relaxation methods}, which are used to accelerate the convergence for systems that are convergent by the Gauss-Seidel technique.
+
+These methods are abbreviated \textbf{SOR}, for \textbf{Successive Over-Relaxation}, and are particularly useful for solving the linear systems that occur in the numerical solution of certain partial-differential equations.
+
+\section{Experiments}
+\label{S:3}
+
+In this section, there are several experiments made to verify efficiency and robustness of three iterative methods to obtain the solutions of the linear systems, which have been introduced in Section \ref{S:2}. To obtain the results of experiments, some programs are written in Python and the following codes are run initially to import some useful packages and to set used settings.
+
+\begin{lstlisting}
+import numpy as np
+\end{lstlisting}
+
+\subsection{Jacobi Method}
+\label{SS:3.1}
+
+An example is shown below to test the effectiveness of Jacobi method. The coefficients of the Equation \ref{eq:jacobi} are shown.
+
+\begin{equation}
+\label{eq:jacobi}
+  A = 
+  \begin{bmatrix}
+    4 & 3 & 0 \\ 
+    3 & 4 & -1 \\
+    0 & -1 & 4
+  \end{bmatrix},
+  b = [24, 30, -24]^T.
+\end{equation}
+
+The results are $x_1 = 0.75, x_2 = 5.5, x_3 = -4.625$. And the program of the experiment is also shown below.
+
+\begin{lstlisting}
+import numpy as np
+from numpy.linalg import norm
+
+
+class linearSys:
+    def __init__(self, A, b):
+        self.A = A
+        self.b = b
+        self.n = b.shape[0]
+        self.x = np.zeros([self.n, 1])
+    
+    def JacobiIterative(self, XO, N, TOL):
+        k = 1
+        while k <= N:
+            for i in range(self.n):
+                self.x[i, 0] = (self.b[i] - np.dot(self.A[i, :], XO[:, 0]) + self.A[i, i] * XO[i, 0]) / self.A[i, i]
+            
+            indicator = norm(self.x - XO)
+            if indicator < TOL:
+                return self.x.reshape((-1,))
+            
+            k += 1
+            XO = self.x
+        
+        return 'Maximum number of iterations exceeded'
+\end{lstlisting}
+
+\subsection{Gauss-Seidel Method}
+\label{SS:3.2}
+
+The equation (\ref{eq:jacobi}) is used to verify the effectiveness of the Gauss-Siedel methods. The results of the experiment are $x_1 = 3.14, x_2 = 3.88, x_3 = -5.03$. The programs used in the experiment are also shown below.
+
+\begin{lstlisting}
+...
+  def GaussSeidelIterative(self, XO, N, TOL):
+    k = 1
+    while k <= N:
+        for i in range(self.n):
+            self.x[i, 0] = (self.b[i] - np.dot(self.A[i, 0:i], self.x[0:i, 0]) - np.dot(self.A[i, i+1:], XO[i+1:, 0])) / self.A[i, i]
+        
+        indicator = norm(self.x - XO)
+        if indicator < TOL:
+            return self.x.reshape((-1,))
+        
+        k += 1
+        XO = self.x
+    
+    return 'Maximum number of iterations exceeded'
+\end{lstlisting}
+
+\subsection{SOR}
+\label{SS:3.3}
+
+The equation with eight unknowns has been designed to verify the effectiveness of the SOR method. The optimal $\omega$ is solved by the brute search. The results show that the optimal is $\omega = 0.7$. The programs of the experiment are shown below.
+
+\begin{lstlisting}
+...
+    def SOR(self, XO, N, TOL, omiga):
+        k = 1
+        while k <= N:
+            for i in range(self.n):
+                self.x[i, 0] = (1 - omiga) * XO[i, 0] + omiga * (self.b[i] - np.dot(self.A[i, 0:i], self.x[0:i, 0]) - np.dot(self.A[i, i+1:], XO[i+1:, 0])) / self.A[i, i]
+            
+            indicator = norm(self.x - XO, np.inf)
+            if indicator < TOL:
+                return self.x.reshape((-1,))
+            
+            k += 1
+            XO = self.x
+        
+        return 'Maximum number of iterations exceeded'
+
+
+from report6_codes import linearSys
+import numpy as np
+from numpy.linalg import norm
+
+A = np.array([
+        [-1, 0, 0, np.sqrt(2)/2, 1, 0, 0, 0], 
+        [0, -1, 0, np.sqrt(2)/2, 0, 0, 0, 0],
+        [0, 0, -1, 0, 0, 0, .5, 0],
+        [0, 0, 0, -np.sqrt(2)/2, 0, -1, -.5, 0],
+        [0, 0, 0, 0, -1, 0, 0, 1],
+        [0, 0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, -np.sqrt(2)/2, 0, 0, np.sqrt(3)/2, 0],
+        [0, 0, 0, 0, 0, 0, -np.sqrt(3)/2, -1]
+    ])
+b = np.array([0, 0, 0, 0, 0, 10000, 0, 0])
+sol = linearSys(A, b)
+
+XO = np.ones([8, 1])
+N = 30
+TOL = 1e-2
+
+# print('SOR:', sol.SOR(XO, N, TOL, 1.25))
+
+for w in range(0, 21):
+    w = w / 10
+    x = sol.SOR(XO, N, TOL, w)
+    print(w, norm(A.dot(x) - b, np.inf))
+\end{lstlisting}
+
+\section{Conclusion}
+\label{S:4}
+
+In this article, we have considered methods to study iterative techniques to approximate the solution of linear systems. We began with the Jacobi method and the Gauss-Seidel method to introduce the iterative methods. Both methods require an arbitrary initial approximation $x^{(0)}$ and generate a sequence of vectors $x^{(i+1)}$ using an equation of the form
+
+\begin{equation}
+  x^{(i+1)} = Tx^{(i)} + c
+\end{equation}
+
+It was noted that the method will converge if and only if the spectral radius of the iteration matrix $\rho(T)<1$, and the smaller the spectral radius, the faster the convergence. Analysis of the residual vectors of the Gauss-Seidel technique led to the SOR iterative method, which involves a parameter $\omega$ to speed convergence
+
+\nocite{burden:2011na}
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+% \appendix
+
+% \section{}
+% \label{}
+
+%% References
+%%
+%% Following citation commands can be used in the body text:
+%% Usage of \cite is as follows:
+%%   \cite{key}          ==>>  [#]
+%%   \cite[chap. 2]{key} ==>>  [#, chap. 2]
+%%   \citet{key}         ==>>  Author [#]
+
+%% References with bibTeX database:
+
+\bibliographystyle{model1-num-names}
+\bibliography{ref}
+
+%% Authors are advised to submit their bibtex database files. They are
+%% requested to list a bibtex style file in the manuscript if they do
+%% not want to use model1-num-names.bst.
+
+%% References without bibTeX database:
+
+% \begin{thebibliography}{00}
+
+%% \bibitem must have the following form:
+%%   \bibitem{key}...
+%%
+
+% \bibitem{}
+
+% \end{thebibliography}
+
+\end{document}
