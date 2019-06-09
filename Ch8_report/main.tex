@@ -1,0 +1,604 @@
+\documentclass[preprint,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+%% The graphicx package provides the includegraphics command.
+\usepackage{graphicx}
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+% \usepackage{lineno}
+
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{breqn}
+
+%% add pseudo codes
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+\floatname{algorithm}{Algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{INPUT:}}
+\renewcommand{\algorithmicensure}{\textbf{OUTPUT:}}
+
+%% add python codes
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%
+%% \biboptions{comma,round}
+
+% \biboptions{}
+
+\journal{}
+
+\begin{document}
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+\title{Approximation Theory}
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+\author{ChaosWsF}
+
+\address{No.*, X University}
+
+\begin{abstract}
+%% Text of abstract
+The purpose of this article is to study several techniques to approximate functions or discrete data. Taken the accuracy and popularity into consideration, there are three methods discussed in the article, namely discrete least squares method, continuous least squares method and the orthogonal polynomial method. Then several experiments have been made to verify the effectiveness of those numerical methods. Based on results of those experiments, it can be observed that those methods are effective and useful.
+\end{abstract}
+
+\begin{keyword}
+Least Squares Approximation \sep Orthogonal Polynominals \sep Trigonometric Polynominals
+%% keywords here, in the form: keyword \sep keyword
+
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+
+\end{keyword}
+
+\end{frontmatter}
+
+%%
+%% Start line numbering here if you want
+%%
+% \linenumbers
+
+%% main text
+\section{Introduction}
+\label{S:1}
+
+In Section \ref{S:1}, the overview of the article is listed. In Section \ref{S:2}, several methods of approximation theory are to be introduced and their formulas are to be interpreted. In Section \ref{S:3}, several experiments are designed to verify the efficiency of those methods. In Section \ref{S:4}, the conclusion of the article has been made.
+
+\section{Methodologies}
+\label{S:2}
+
+There are several numerical methods to achieve the approximation, which have been introduced in \cite{burden:2001na}. In this section, three methods are to be illustrated, due to their popularity and accuracy.
+
+\begin{itemize}
+\item Discrete Least Squares Approximation
+\item Approxiamtion to Continuous Functions
+\item Chebyshev Polynominals
+\end{itemize}
+
+\subsection{Discrete Least Squares}
+\label{SS:2.1}
+
+The general problem of fitting the best least squares line to a collection of data $\{(x_i, y_i)\}_{i=1}^m$ involves minimizing the total error,
+
+\[
+E\equiv E_2= \min_{a_0,a_1}\sum_{i=1}^{m}[y_i - (a_1x_i +a_0)]^2,
+\]
+with respect to the parameters $a_0$ and $a_1$. For a minimum to occur, we need
+
+\[
+0=\frac{\partial}{\partial a_0}\sum_{i=1}^{m}[y_i - (a_1x_i
++a_0))]^2=\sum_{i=1}^{m}2(y_i - a_1x_i -a_0)(-1),\]
+
+and
+
+\[
+0=\frac{\partial}{\partial a_1}\sum_{i=1}^{m}[y_i - (a_1x_i
++a_0))]^2=\sum_{i=1}^{m}2(y_i - a_1x_i -a_0)(-x_i).
+\]
+
+These equations simplify to the \textbf{normal equations}:
+
+\[
+\begin{array}{c}
+  a_0\cdot m +a_1\sum\limits_{i=1}^{m}x_i=\sum\limits_{i=1}^{m}y_i,\\
+  a_0\sum\limits_{i=1}^{m}x_i+a_1\sum\limits_{i=1}^{m}x_i^2=\sum\limits_{i=1}^{m}x_iy_i.
+\end{array}
+\]
+
+The solution to this system of equation is
+
+\[
+a_0=\frac{\sum\limits_{i=1}^{m}x_i^2\sum\limits_{i=1}^{m}y_i-\sum\limits_{i=1}^{m}x_i y_i\sum\limits_{i=1}^{m}x_i}
+{m\biggl(\sum\limits_{i=1}^{m}x_i^2\biggr)-\biggl(\sum\limits_{i=1}^{m}x_i\biggr)^2}
+\]
+\[
+a_1=\frac{m\sum\limits_{i=1}^{m}x_iy_i-\sum\limits_{i=1}^{m}x_i\sum\limits_{i=1}^{m}y_i}
+{m\biggl(\sum\limits_{i=1}^{m}x_i^2\biggr)-\biggl(\sum\limits_{i=1}^{m}x_i\biggr)^2}.
+\]
+
+The general problem of approximating a set of data, 
+
+$$\{(x_i, y_i)| i=1,2,\cdots,m\},$$
+
+with an algebraic polynomial
+
+\[
+P_n(x) = a_nx^n + a_{n-1}x^{n-1}+\cdots + a_1x + a_0
+\]
+
+of degree $n < m - 1$, using the least squares procedure is handled in a similar manner.
+
+We choose the constants $a_0,a_1,\cdots,a_n$ to minimize the least squares error
+
+\begin{eqnarray*}
+    E_2 &=& \sum_{i=1}^{m}(y_i-P_n(x_i))^2 \\
+        &=& \sum_{i=1}^{m}y_i^2-2\sum_{i=1}^{m}y_iP_n(x_i)+\sum_{i=1}^{m}P_n^2(x_i)\\
+        &=& \sum_{i=1}^{m}y_i^2-2\sum_{i=1}^{m}y_i\biggl(\sum_{j=0}^{n}a_jx_i^j\biggr)
+        +\sum_{i=1}^{m}\biggl(\sum_{j=0}^{n}a_jx_i^j\biggr)^2 \\
+        &=& \sum_{i=1}^{m}y_i^2-2\sum_{j=0}^{n}a_j\biggl(\sum_{i=1}^my_ix_i^j\biggr)
+        +\sum_{j=0}^{n}\sum_{k=0}^{n}a_ja_k\biggl(\sum_{i=1}^{m}x_i^{j+k}\biggr).
+\end{eqnarray*}
+
+As in the linear case, to find the suitable parameters $a_0$, $a_1$, $\cdots$, $a_n$, such that $E$ gets to be minimized. It is necessary that for each $j$, $j=0,1,\cdots,n$,
+
+\[
+0=\frac{\partial E}{\partial
+a_j}=-2\sum_{i=1}^{m}y_ix_i^j+2\sum_{k=0}^{n}a_k\sum_{i=1}^{m}x_i^{j+k}.
+\]
+
+This gives $n + 1$ \textbf{normal equations} in the $n+1$ unknown parameters $a_j$,
+
+\[
+\sum_{k=0}^n a_k\sum_{i=1}^mx_i^{j+k}=\sum_{i=1}^my_ix_i^j,
+\]
+
+for each $j=0,1,\cdots,n.$
+
+It is helpful to write the equations as follows:
+
+{\footnotesize
+\begin{eqnarray*}
+a_0\sum_{i=1}^{m}x_i^0+a_1\sum_{i=1}^{m}x_i^1+a_2\sum_{i=1}^{m}x_i^2+\cdots+a_n\sum_{i=1}^{m}x_i^n
+&=& \sum_{i=1}^{m}y_ix_i^0, \\
+a_0\sum_{i=1}^{m}x_i^1+a_1\sum_{i=1}^{m}x_i^2+a_2\sum_{i=1}^{m}x_i^3+\cdots+a_n\sum_{i=1}^{m}x_i^{n+1}
+&=& \sum_{i=1}^{m}y_ix_i^1, \\
+ &\vdots&  \\
+a_0\sum_{i=1}^{m}x_i^n+a_1\sum_{i=1}^{m}x_i^{n+1}+a_2\sum_{i=1}^{m}x_i^{n+2}+\cdots+a_n\sum_{i=1}^{m}x_i^{2n}
+&=& \sum_{i=1}^{m}y_ix_i^n.
+\end{eqnarray*}
+}
+
+These normal equations have a unique solution provided that the $x_i$ are distinct.
+
+\subsection{Continuous Functions}
+\label{SS:2.2}
+
+Suppose $f\in C[a, b]$ and that a polynomial $P_n(x)$ of degree at most $n$ is required that will minimize the error
+
+\[
+\int_a^b[f(x)-P_n(x)]^2dx.
+\]
+
+To determine a least squares approximating polynomial, let
+$$
+P_n(x)= a_nx^n + a_{n-1}x^{n-1}+\cdots + a_1x + a_0 =\sum_{k=0}^n a_k x^k,
+$$
+and define
+$$
+E \equiv E(a_0,a_1,\cdots,a_n) =\int_a^b\biggl(f(x)-\sum_{k=0}^n a_k
+x^k\biggr)^2dx.
+$$
+
+The problem is to find real coefficients $a_0,a_1,\cdots,a_n$ that will minimize $E$. A necessary condition for the numbers $a_0$, $a_1$, $\cdots$, $a_n$ to minimize $E$ is that
+
+\[
+\frac{\partial E}{\partial a_j}=0, \text{ for each } j=0,1,\cdots,n.
+\]
+
+Since
+
+\begin{eqnarray*}
+ E &=&\int_a^b[f(x)]^2dx-2\sum_{k=0}^na_k\int_a^bx^kf(x)dx \\
+ &&+ \int_a^b \biggl( \sum_{k=0}^na_kx^k \biggr)^2dx,
+\end{eqnarray*}
+
+we have
+
+\[
+ \frac{\partial E}{\partial a_j}=-2\int_a^bx^jf(x)dx+2\sum_{k=0}^n a_k \int_a^b x^{j+k} dx.
+\]
+
+Note that the normal equations always have a unique solution provided $f\in C[a, b]$.
+
+Hence, to find $P_n(x)$, the $(n+1)$ linear \textbf{normal equations}
+
+\[
+\sum_{k=0}^n a_k \int_a^b x^{j+k}dx=\int_a^b x^jf(x)dx,
+\]
+
+for each $j=0,1,\cdots,n$, must be solved for the $(n + 1)$ unknowns $a_j$. We rewrite it in linear system of equations
+
+\begin{eqnarray*}
+a_0 \int_a^b1dx+a_1\int_a^bxdx+\cdots+a_n\int_a^bx^ndx & = & \int_a^bf(x)dx \\
+a_0 \int_a^bxdx+a_1\int_a^bx^2dx+\cdots+a_n\int_a^bx^{n+1}dx & = & \int_a^bxf(x)dx \\
+& \vdots &  \\
+a_0\int_a^bx^ndx+a_1\int_a^bx^{n+1}dx+\cdots+a_n\int_a^bx^{2n}dx & = & \int_a^bx^nf(x)dx.
+\end{eqnarray*}
+
+To solve the unknowns $a_0,a_1,\cdots,a_n$, an $(n + 1)\times (n + 1)$ linear system  must be solved, and the coefficients in the linear system are of the form
+
+\[
+\int_a^b x^{j+k} dx=\frac{b^{j+k}-a^{j+k}}{j+k+1},
+\]
+
+for each $j,k=0,1,2,\cdots,n$ and in the right side are of the form
+
+\[
+\int_a^bx^j f(x)dx,\text{ for } j=0,1,2,\cdots,n.
+\]
+
+The matrix in the linear system is known as a \textbf{Hilbert matrix}, which is a classic example for demonstrating roundoff error difficulties.
+
+\subsection{Chebyshev Polynominals}
+\label{SS:2.3}
+
+In this subsection, we will introduce the set of Chebyshev Polynomials $\{T_n(x)=\cos[n\arccos x]\}$ in [-1,1] for each $n>0$, which are orthogonal on $(-1,1)$ with respect to the weight function $w(x)=(1-x^2)^{-1/2}$.
+
+First we show that $T_n(x)$ is a polynomial in $x$. We note that by definition
+
+\[
+T_0(x)=\cos 0=1, \text{ and }  T_1(x)=\cos[\arccos x]=x.
+\]
+
+For $n>1$, we introduce the substitution $\theta =\arccos x$ to change this equation to
+
+\[
+T_n(\theta(x))=T_n(\theta)=\cos (n\theta), \text{ where }\theta\in [0,\pi].
+\]
+
+A recurrence relation is derived by noting that
+
+\[
+T_{n+1}(\theta)=\cos[(n+1)\theta]=\cos(n\theta)\cos \theta- \sin(n\theta)\sin\theta\]
+
+and
+
+\[
+T_{n-1}(\theta) = \cos(n\theta) \cos \theta + \sin(n\theta) \sin\theta.
+\]
+
+Adding these equations gives
+
+\[
+T_{n+1}(\theta) = 2\cos(n\theta)\cos\theta - T_{n-1}(\theta).
+\]
+
+but we note that
+
+\[\cos \theta=\cos(\arccos x)=x,\]
+
+and
+
+\[\cos(n\theta)=\cos(n\arccos \theta)=T_n(x),\]
+
+so we have for each $n\ge 1$,
+\[
+T_{n+1}(x)=2xT_n(x)-T_{n-1}(x).
+\]
+
+Since $T_0(x)=1, T_1(x)=x$,  the recurrence relation
+implies that $T_n(x)$ is a polynomial of degree $n$ with leading
+coefficient $2^{n-1}$, when $n\ge 1$.
+
+The Chebyshev polynomials are
+
+\begin{eqnarray*}
+  T_0(x) &=& 1, \\
+  T_1(x) &=& x, \\
+  T_2(x) &=& 2xT_1(x) - T_0(x) = 2x^2 - 1,\\
+  T_3(x) &=& 2xT_2(x) - T_1(x) =4x^3 - 3x,\\
+  T_4(x) &=& 2xT_3(x) - T_2(x) = 8x^4 - 8x^2 + 1.\\
+         &\vdots&
+\end{eqnarray*}
+
+Second, we show the orthogonality of the Chebyshev polynomials with respect to the weight function $w(x)=(1-x^2)^{-1/2}$.
+
+Considering
+
+\[
+\int_{-1}^1 \frac{T_n(x)T_m(x)}{\sqrt{1-x^2}}dx=\int_{-1}^1
+\frac{\cos(n\arccos x)\cos(m\arccos x)}{\sqrt{1-x^2}}
+\]
+
+Reintroducing the substitution $\theta = \arccos x$ gives
+
+\[
+d\theta=-\frac{1}{\sqrt{1-x^2}}dx
+\]
+
+and
+
+\begin{eqnarray*}
+\int_{-1}^1 \frac{T_n(x)T_m(x)}{\sqrt{1-x^2}}dx &=&-\int_{\pi}^0
+\cos(n\theta)\cos(m\theta)d\theta\\
+&=&\int_0^{\pi} \cos(n\theta)\cos(m\theta)d\theta.
+\end{eqnarray*}
+
+Suppose $n\ne m$. Since
+
+\[
+\cos(n\theta)\cos(m\theta)=\frac{1}{2}[\cos(n+m)\theta+\cos(n-m)\theta],
+\]
+
+we have
+
+\begin{eqnarray*}
+  &&\int_{-1}^1 \frac{T_n(x)T_m(x)}{\sqrt{1-x^2}}dx \\
+  &&= \frac{1}{2}\int_0^{\pi}\cos(n+m)\theta d\theta+\frac{1}{2}\int_0^{\pi}\cos(n-m)\theta d\theta  \\
+   &&= \biggl[\frac{1}{2(n+m)}\sin(n+m)\theta+\frac{1}{2(n-m)}\sin(n-m)\theta\biggr]_0^{\pi} \\[5pt]
+   &&= 0.
+\end{eqnarray*}
+
+By a similar technique, it can be shown that when $n = m,$
+
+\[
+\int_{-1}^1 \frac{[T_n(x)]^2}{\sqrt{1-x^2}}dx=\frac{\pi}{2},
+\text{ for each } n\ge 1.
+\]
+
+Suppose that $x_0,x_1,x_2,\cdots, x_n$ are distinct points in the interval [-1,1], and $P(x)$ is the Lagrange interpolating polynomial of degree $n$, if $f\in C^{n+1}[-1,1]$, then, for each $x\in [-1,1]$, a number $\xi(x)$ exists in $(-1,1)$ with
+ 
+\[
+f(x)-P(x)=\frac{f^{(n+1)}(\xi(x))}{(n+1)!}(x-x_0)(x-x_1)\cdots
+(x-x_n),
+\]
+
+Generally there is no control over $\xi(x)$, so to minimize the error by shrewd placement of nodes $x_0,x_1,\cdots,x_n$, we find $x_0,x_1,\cdots,x_n$ to minimize the quantity
+
+\[
+|(x-x_0)(x-x_1)\cdots (x-x_n)|
+\]
+
+throughout the interval $[-1,1]$.
+
+Since $(x-x_0)(x-x_1)\cdots (x-x_n)$ is a monic polynomial of degree $n+1$, we have just seen that the minimum is obtained when
+
+\[
+(x-x_0)(x-x_1)\cdots (x-x_n)=\tilde{T}_{n+1}(x).
+\]
+
+The maximum value of $|(x-x_0)(x-x_1)\cdots (x-x_n)|$ is smallest when $x_k$ is chosen to be the $(k+1)$st zeros of $\tilde{T}_{n+1}$, for each $k=0,1,\cdots,n$; that is, when $x_k$ is
+
+\[
+\bar{x}_{k+1}=\cos \biggl(\frac{2k+1}{2(n+1)}\pi\biggr).
+\]
+
+Since $\max\limits_{x\in [-1,1]}|\tilde{T}_{n+1}(x)|=2^{-n}$, this also implies that
+
+\begin{eqnarray*}
+\frac{1}{2^n}&=&\max_{x\in[-1,1]} |(x-\bar{x}_1)(x-\bar{x}_2)\cdots
+(x-\bar{x}_{n+1})|\\
+& \le& \max_{x\in[-1,1]}|(x-x_0)(x-x_1)\cdots (x-x_n)|,
+\end{eqnarray*}
+
+for any choice of $x_0,x_1,\cdots,x_n$ in the interval $[-1,1]$.
+
+\section{Experiments}
+\label{S:3}
+
+In this section, there are several experiments made to verify efficiency and robustness of three methods to obtain the approximation of data or functions, which have been introduced in Section \ref{S:2}. To obtain the results of experiments, some programs are written in Python and the following codes are run initially to import some useful packages and to set used settings.
+
+\begin{lstlisting}
+import numpy as np
+from scipy.linalg import solve
+\end{lstlisting}
+
+\subsection{Discrete Least Squares}
+\label{SS:3.1}
+
+The following example will show how to use the least squares approximation to discrete data with the polynomials of degree $3$. The data is listed in Table \ref{tab:ex1}.
+
+\begin{table}[h]
+    \resizebox{\textwidth}{!}{
+        \centering
+        \begin{tabular}{ccccccccccc}
+            \hline
+            $x_i$ & 4.0 & 4.2 & 4.5 & 4.7 & 5.1 & 5.5 & 5.9 & 6.3 & 6.8 & 7.1 \\
+            $y_i$ & 102.56 & 113.18 & 130.11 & 142.05 & 167.53 & 195.14 & 224.87 & 256.73 & 299.50 & 326.72 \\
+            \hline
+        \end{tabular}
+    }
+    \caption{Example of Discrete Polynomial Approximation}
+    \label{tab:ex1}
+\end{table}
+
+The following program has been run to get the results. And the result is $-0.01367x^3 + 6.846x^2 - 2.379x + 3.429$, the absolute error is $0.0005273$.
+
+\begin{lstlisting}
+x1 = np.array([4.0, 4.2, 4.5, 4.7, 5.1, 5.5, 5.9, 6.3, 6.8, 7.1])
+y1 = np.array([102.56, 113.18, 130.11, 142.05, 167.53, 195.14, 224.87, 256.73, 299.50, 326.72])
+polyCoeff1 = np.polyfit(x1, y1, 3)
+poly1 = np.poly1d(polyCoeff1)
+error1 = np.sum((poly1(x1) - y1) ** 2)
+print(poly1)
+print(error1)
+\end{lstlisting}
+
+\subsection{Continuous Functions}
+\label{SS:3.2}
+
+The following example is to find the least squares approximating polynomial of degree $2$ for the function $f(x)=\sin \pi x$ on the interval $[0, 1]$. The following program has been run to get the results. And the result is $-4.123x^2 + 4.123x - 0.05047$.
+
+\begin{lstlisting}
+A = np.array([
+    [1, 1/2, 1/3],
+    [1/2, 1/3, 1/4],
+    [1/3, 1/4, 1/5]
+])
+b = np.array([2/np.pi, 1/np.pi, (np.pi**2 - 4)/(np.pi**3)])
+polyCoeff2 = solve(A, b)[::-1]
+poly2 = np.poly1d(polyCoeff2)
+print(poly2)
+\end{lstlisting}
+
+\subsection{Chebyshev Polynominals}
+\label{SS:3.3}
+
+The Chebyshev polynomials can be used to minimize the error in Lagrange interpolation. Let $f(x)= xe^x$ on $[0, 1.5]$. We can compare the values given by the Lagrange polynomial with four equally-spaced nodes with those given by the Lagrange polynomial with nodes given by zeros of the fourth Chebyshev polynomial. 
+
+The first polynomial $P_3(x)$ uses equally spaced nodes $x_0=0, x_1=0.5, x_2=1$ and $x_3=1.5$. For the second interpolating polynomial $\tilde{P}_3(x)$, we shift the zeros $\bar{x}_k=\cos((2k+1)/8)\pi$, $k=0,1,2,3$ of $\tilde{T}_4$ from $[-1,1]$ to $[0,1.5]$ to obtain the nodes for Lagrange interpolation.
+
+It can be seen from Table \ref{tab:ex2} that, although the error using $P_3(x)$ is less than using $\tilde{P}_3(x)$ near the middle of the table, the maximum error involved with using $\tilde{P}_3(x)$ is considerably less than when using $P_3(x)$.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{cccccc}
+        \hline
+        $x$ & $f(x)=xe^x$ & $P_3(x)$ & $|xe^x - P_3(x)|$ & $\tilde{P}_3(x)$ & $|xe^x - \tilde{P}_3(x)|$ \\
+        \hline
+        0.15 & 0.1743 & 0.1969 & 0.0226 & 0.1868 & 0.0125 \\
+        0.25 & 0.3210 & 0.3435 & 0.0225 & 0.3358 & 0.0148 \\
+        0.35 & 0.4967 & 0.5121 & 0.0154 & 0.5064 & 0.0097 \\
+        0.65 & 1.245 & 1.233 & 0.012 & 1.231 & 0.014 \\
+        0.75 & 1.588 & 1.572 & 0.016 & 1.571 & 0.017 \\
+        0.85 & 1.989 & 1.976 & 0.013 & 1.974 & 0.015 \\
+        1.15 & 3.632 & 3.650 & 0.018 & 3.644 & 0.012 \\
+        1.25 & 4.363 & 4.391 & 0.028 & 4.382 & 0.019 \\
+        1.35 & 5.208 & 5.237 & 0.029 & 5.224 & 0.016 \\
+        \hline
+    \end{tabular}
+    \caption{Example Two}
+    \label{tab:ex2}
+\end{table}
+
+\section{Conclusion}
+\label{S:4}
+
+In this article, we have considered approximating data and functions with elementary functions. Two types of approximations have been applied, discrete and continuous. Discrete approximations arise when approximating a finite set of data with an elementary function. Continuous approximations are used when the function to be approximated is known. Discrete least squares techniques are recommended when the function is specified by giving a set of data that may not exactly represent the function. Least squares fit of data can take the form of a linear or other polynomial approximation or even an exponential form. These approximations are computed by solving sets of normal equations, as given in Section \ref{SS:2.1}.
+
+When the function to be approximated can be evaluated at any required argument, the approximations seek to minimize an integral instead of a sum. The continuous least squares polynomial approximations have been considered in Section \ref{SS:2.3}. Efficient computation of least squares polynomials lead to orthonormal sets of polynomials, such as the Legendre and Chebyshev polynomials.
+
+\nocite{burden:2011na}
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+% \appendix
+
+% \section{}
+% \label{}
+
+%% References
+%%
+%% Following citation commands can be used in the body text:
+%% Usage of \cite is as follows:
+%%   \cite{key}          ==>>  [#]
+%%   \cite[chap. 2]{key} ==>>  [#, chap. 2]
+%%   \citet{key}         ==>>  Author [#]
+
+%% References with bibTeX database:
+
+\bibliographystyle{model1-num-names}
+\bibliography{ref}
+
+%% Authors are advised to submit their bibtex database files. They are
+%% requested to list a bibtex style file in the manuscript if they do
+%% not want to use model1-num-names.bst.
+
+%% References without bibTeX database:
+
+% \begin{thebibliography}{00}
+
+%% \bibitem must have the following form:
+%%   \bibitem{key}...
+%%
+
+% \bibitem{}
+
+% \end{thebibliography}
+
+\end{document}
